@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+PARTHD=/dev/sdc7
+MNTDIR=/mnt
+IMGDIR="${MNTDIR}"
+IMGFMT="qcow2"
+IMGNAME=pardal.$IMGFMT
+IMGSIZE="35G"
+BOOTSIZE="1G"
+
+NBDDIR=/dev/nbd0
+NBDDIRP1=/dev/nbd0p1
+NBDDIRP2=/dev/nbd0p2
+ROOTLABELNAME="Pardal Linux"
+BOOTLABELNAME="BOOT"
+
+P1MOUNT_DIR=/mnt/working/boot
+P2MOUNT_DIR=/mnt/working
+
+#BACKUPFILE=/home/wendel/Pardal/backup/pardal-pre-cap8.tar.xz
+
+# Prepara ambiente
+mount $PARTHD $MNTDIR
+
+modprobe nbd max_part=8
+
+# Cria imagem
+qemu-img create -f $IMGFMT $IMGDIR/$IMGNAME $IMGSIZE
+
+# Conecta imagem
+qemu-nbd --connect=$NBDDIR $IMGDIR/$IMGNAME 
+
+# Espera
+sleep 2
+
+# Particiona a imagem
+fdisk "$NBDDIR" <<EOF
+g
+n
+1
+
++${BOOTSIZE}
+n
+
+
+
+w
+EOF
+
+partprobe $NBDDIR
+sleep 1
+
+# Formata partições
+mkfs -t vfat $NBDDIRP1
+mkfs -t ext4 $NBDDIRP2
+sync
+
+
+# Nomea partições
+e2label  $NBDDIRP2 "${ROOTLABELNAME}"
+fatlabel $NBDDIRP1 "${BOOTLABELNAME}"
+
+# Define umask
+umask 022
+
+# Cria diretório de montagem (p2)
+mkdir -p $P2MOUNT_DIR
+
+# Monta imagem (p2)
+mount -t ext4 $NBDDIRP2 $P2MOUNT_DIR
+
+# Limpa imagem (p2)
+rm -rf $P2MOUNT_DIR/*
+
+# Aplica backup (p2)
+cd $P2MOUNT_DIR
+#tar -xpvf $BACKUPFILE
+cd $IMGDIR
+
+# Cria diretório de montagem (p1)
+mkdir -p $P1MOUNT_DIR
+
+# Monta imagem (p1)
+mount -t vfat $NBDDIRP1 $P1MOUNT_DIR
+
+# Limpeza de sources
+rm -rf $P2MOUNT_DIR/sources/*
+
+# Processo de remontagem
+sleep 2
+
+umount $P1MOUNT_DIR
+umount $P2MOUNT_DIR
+
+sleep 1
+qemu-nbd --disconnect $NBDDIR
+
+sleep 1
+rmmod nbd
+
+sleep 1
+modprobe nbd max_part=8
+
+qemu-nbd --connect=$NBDDIR $IMGDIR/$IMGNAME
+partprobe $NBDDIR
+
+sleep 1
+
+mount -t ext4 $NBDDIRP2 $P2MOUNT_DIR
+mount -t vfat $NBDDIRP1 $P1MOUNT_DIR
+
+chown root:root $P2MOUNT_DIR
+chmod 755 $P2MOUNT_DIR
+
+echo "A imagem foi feita e montada com sucesso"
+
+# Unset
+unset PARTHD BOOTSIZE MNTDIR IMGDIR IMGFMT IMGNAME IMGSIZE NBDDIR NBDDIRP1 NBDDIRP2 ROOTLABELNAME BOOTLABELNAME P1MOUNT_DIR P2MOUNT_DIR BACKUPFILE
