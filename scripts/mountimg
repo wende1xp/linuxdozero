@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-IMGDIR=/mnt/
+IMGDIR=/mnt
 IMGFMT="qcow2"
 IMGNAME=pardal.$IMGFMT
 
