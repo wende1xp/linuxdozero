@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+P1MOUNT_DIR=/mnt/working/sysroot/boot
+P2MOUNT_DIR=/mnt/working
+
+NBDDIR=/dev/nbd0
+NBDDIRP1=/dev/nbd0p1
+NBDDIRP2=/dev/nbd0p2
+
+umount $P1MOUNT_DIR
+umount $P2MOUNT_DIR
+
+qemu-nbd --disconnect $NBDDIR
+
+sleep 1
+
+rmmod nbd
+
+unset P1MOUNT_DIR P2MOUNT_DIR NBDDIR NBDDIRP1 NBDDIRP2
