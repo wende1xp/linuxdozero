@@ -66,7 +66,6 @@ set +h
 umask 022
 PARDAL=/mnt/working
 STAGE1=$PARDAL/tools_stage1
-STAGE2=$PARDAL/tools_stage2
 SYSROOT=$PARDAL/sysroot
 SYSTARGET=x86_64-pardal-linux-musl
 LC_ALL=POSIX
@@ -207,7 +206,7 @@ Certifique-se de que não existem arquivos obsoletos embutidos no pacote:
 make mrproper CC=clang
 ```
 
-Compile os cabeçalhos e os instale na raiz falsa do sistema que estamos construindo:
+Compile os cabeçalhos usando o compilador do host e os instale na raiz falsa do sistema que estamos construindo:
 
 ```
 make headers_install HOSTCC=/usr/bin/clang ARCH=x86 INSTALL_HDR_PATH=$SYSROOT/usr
