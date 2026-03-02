@@ -10,6 +10,7 @@ Para começarmos fiz um script que já cria uma imagem e monta deixando no ponto
 
 ```
 export PARDAL=/mnt/working 
+export SYSROOT=/mnt/working/sysroot
 ```
 
 Agora adicione um usuário para evita contaminar o sistema host e garantir builds reproduzíveis:
@@ -24,6 +25,27 @@ Agora crie os diretórios que armazenarão as toolchains temporárias isoladas d
 
 ```
 mkdir -pv $PARDAL/{tools_{stage1,stage2},sources/{patches/{musl,llvm},pkgs},sysroot}
+
+mkdir -vp "$SYSROOT"/{boot,dev,proc,sys,run,tmp,home,mnt,etc,opt}
+mkdir -vp "$SYSROOT"/etc/init.d
+mkdir -vp "$SYSROOT/usr"/{bin,sbin,lib,share}
+mkdir -vp "$SYSROOT/var"/{log,run,cache,tmp,lib}
+```
+
+Ajuste permissões:
+
+```
+chmod 0755 "$SYSROOT"
+chmod 1777 "$SYSROOT/tmp" "$SYSROOT/var/tmp"
+```
+
+Faça links simbólicos:
+
+```
+ln -sv usr/bin "$SYSROOT/bin"
+ln -sv usr/sbin "$SYSROOT/sbin"
+ln -sv usr/lib "$SYSROOT/lib"
+ln -sv lib "$SYSROOT/usr/lib64"
 ```
 
 Baixe o arquivo source_pkgs.list desse repositório e execute o comando a seguir para baixar os pacotes. Obs.: Se o arquivo estiver em uma pasta diferente da pasta onde você está, coloque o caminho completo para o arquivo (Ex.: /home/user/Downloads/source_pkgs.list):
@@ -66,6 +88,7 @@ set +h
 umask 022
 PARDAL=/mnt/working
 STAGE1=$PARDAL/tools_stage1
+STAGE2=$PARDAL/tools_stage2
 SYSROOT=$PARDAL/sysroot
 SYSTARGET=x86_64-pardal-linux-musl
 LC_ALL=POSIX
@@ -206,7 +229,7 @@ Certifique-se de que não existem arquivos obsoletos embutidos no pacote:
 make mrproper CC=clang
 ```
 
-Compile os cabeçalhos usando o compilador do host e os instale na raiz falsa do sistema que estamos construindo:
+Compile os cabeçalhos e os instale na raiz falsa do sistema que estamos construindo:
 
 ```
 make headers_install HOSTCC=/usr/bin/clang ARCH=x86 INSTALL_HDR_PATH=$SYSROOT/usr
