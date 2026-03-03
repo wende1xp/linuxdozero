@@ -57,7 +57,7 @@ sync
 
 # Nomea partições
 e2label  $NBDDIRP2 "${ROOTLABELNAME}"
-fatlabel $NBDDIRP1 "${BOOTLABELNAME}"
+e2label $NBDDIRP1 "${BOOTLABELNAME}"
 
 # Define umask
 umask 022
