@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-P1MOUNT_DIR=/mnt/working/sysroot/boot
+P1MOUNT_DIR=/mnt/working/boot
 P2MOUNT_DIR=/mnt/working
 
 NBDDIR=/dev/nbd0
