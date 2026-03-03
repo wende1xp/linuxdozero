@@ -84,12 +84,17 @@ EOF
 cat > ~/.bashrc << "EOF"
 set +h
 umask 022
+
 PARDAL=/mnt/working
-STAGE1=$PARDAL/tools_stage1
-STAGE2=$PARDAL/tools_stage2
+
+STAGE1=$PARDAL/stage1
+STAGE2=$PARDAL/stage2
+
 SYSTARGET=x86_64-pardal-linux-musl
+
 LC_ALL=POSIX
 PATH=$STAGE1/bin:/usr/bin:/bin
+
 export PARDAL STAGE1 SYSTARGET LC_ALL PATH
 EOF
 ```
