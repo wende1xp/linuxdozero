@@ -1,4 +1,0 @@
-https://gitlab.com/pardal-linux/log/-/raw/main/patches/musl/0001-isatty-do-not-collapse-all-non-EBADF-errors-to-ENOTTY.patch
-https://gitlab.com/pardal-linux/log/-/raw/main/patches/musl/0002-iconv-fix-erroneous-input-validation-in-EUC-KR-decoder.patch
-https://gitlab.com/pardal-linux/log/-/raw/main/patches/musl/0003-iconv-harden-UTF-8-output-code-path-against-input-decoder-bugs.patch
-https://gitlab.com/pardal-linux/log/-/raw/main/patches/musl/0004-stdio-skip-empty-iovec-when-buffering-is-disabled.patch
