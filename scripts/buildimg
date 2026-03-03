@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-PARTHD=/dev/sdc7
 MNTDIR=/mnt
 IMGDIR="${MNTDIR}"
 IMGFMT="qcow2"
@@ -14,7 +13,7 @@ NBDDIR=/dev/nbd0
 NBDDIRP1=/dev/nbd0p1
 NBDDIRP2=/dev/nbd0p2
 ROOTLABELNAME="Pardal Linux"
-BOOTLABELNAME="BOOT"
+BOOTLABELNAME="boot"
 
 P1MOUNT_DIR=/mnt/working/boot
 P2MOUNT_DIR=/mnt/working
@@ -22,7 +21,6 @@ P2MOUNT_DIR=/mnt/working
 #BACKUPFILE=/home/wendel/Pardal/backup/pardal-pre-cap8.tar.xz
 
 # Prepara ambiente
-mount $PARTHD $MNTDIR
 
 modprobe nbd max_part=8
 
@@ -53,10 +51,9 @@ partprobe $NBDDIR
 sleep 1
 
 # Formata partições
-mkfs -t vfat $NBDDIRP1
+mkfs -t ext4 $NBDDIRP1
 mkfs -t ext4 $NBDDIRP2
 sync
-
 
 # Nomea partições
 e2label  $NBDDIRP2 "${ROOTLABELNAME}"
@@ -83,7 +80,7 @@ cd $IMGDIR
 mkdir -p $P1MOUNT_DIR
 
 # Monta imagem (p1)
-mount -t vfat $NBDDIRP1 $P1MOUNT_DIR
+mount -t ext4 $NBDDIRP1 $P1MOUNT_DIR
 
 # Limpeza de sources
 rm -rf $P2MOUNT_DIR/sources/*
@@ -109,7 +106,7 @@ partprobe $NBDDIR
 sleep 1
 
 mount -t ext4 $NBDDIRP2 $P2MOUNT_DIR
-mount -t vfat $NBDDIRP1 $P1MOUNT_DIR
+mount -t ext4 $NBDDIRP1 $P1MOUNT_DIR
 
 chown root:root $P2MOUNT_DIR
 chmod 755 $P2MOUNT_DIR
