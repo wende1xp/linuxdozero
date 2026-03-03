@@ -6,7 +6,7 @@ Para começarmos fiz um script que já cria uma imagem e monta deixando no ponto
 
 # **Fase 0 - Preparação**
 
-Exporte uma variável apontando pro caminho que será usado para construir o sistema, nesse caso a variável será chamade de PARDAL e o caminho será /mnt/working.
+Entre no usuário root e exporte uma variável apontando pro caminho que será usado para construir o sistema, nesse caso a variável será chamade de PARDAL e o caminho será /mnt/working.
 
 ```
 export PARDAL=/mnt/working 
