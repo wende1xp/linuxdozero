@@ -179,48 +179,6 @@ export RANLIB="llvm-ranlib"
 export LD="ld.lld"
 ```
 
-Teste as variáveis com o seguinte comando:
-
-```
-echo 'int main(){}' > test.c
-$CC test.c -v
-```
-
-A saída deve ser parecida ou igual a essa:
-```
-clang version 21.1.8
-Target: x86_64-pardal-linux-musl
-Thread model: posix
-InstalledDir: /mnt/working/tools_stage1/bin
- "/mnt/working/tools_stage1/bin/clang-21" -cc1 -triple x86_64-pardal-linux-musl -emit-obj -dumpdir a- -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name test.c -mrelocation-model pic -pic-level 2 -pic-is-pie -mframe-pointer=all -ffp-contract=on -fno-rounding-math -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/mnt/working/sources/pkgs -v -fcoverage-compilation-dir=/mnt/working/sources/pkgs -resource-dir /mnt/working/tools_stage1/lib/clang/21 -isysroot /mnt/working/sysroot -internal-isystem /mnt/working/sysroot/usr/local/include -internal-externc-isystem /mnt/working/sysroot/include -internal-externc-isystem /mnt/working/sysroot/usr/include -internal-isystem /mnt/working/tools_stage1/lib/clang/21/include -ferror-limit 19 -fmessage-length=78 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -fcolor-diagnostics -faddrsig -D__GCC_HAVE_DWARF2_CFI_ASM=1 -o /tmp/test-4c5d0f.o -x c test.c
-clang -cc1 version 21.1.8 based upon LLVM 21.1.8 default target x86_64-pardal-linux-musl
-ignoring nonexistent directory "/mnt/working/sysroot/usr/local/include"
-ignoring nonexistent directory "/mnt/working/sysroot/include"
-ignoring nonexistent directory "/mnt/working/sysroot/usr/include"
-#include "..." search starts here:
-#include <...> search starts here:
- /mnt/working/tools_stage1/lib/clang/21/include
-End of search list.
- "/usr/bin/ld" --sysroot=/mnt/working/sysroot --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -pie -dynamic-linker /lib/ld-musl-x86_64.so.1 -o a.out Scrt1.o crti.o crtbeginS.o /tmp/test-4c5d0f.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed crtendS.o crtn.o
-ld: error: cannot open Scrt1.o: No such file or directory
-ld: error: cannot open crti.o: No such file or directory
-ld: error: cannot open crtbeginS.o: No such file or directory
-ld: error: unable to find library -lgcc
-ld: error: unable to find library -lgcc_s
-ld: error: unable to find library -lc
-ld: error: unable to find library -lgcc
-ld: error: unable to find library -lgcc_s
-ld: error: cannot open crtendS.o: No such file or directory
-ld: error: cannot open crtn.o: No such file or directory
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
-```
-
-Essa saída é esperada porque não temos a biblioteca em C (musl). Remova o arquivo usado no teste:
-
-```
-rm test.c
-```
-
 # • Cabeçalhos da API do Linux 6.19.5
 
 Certifique-se de que não existem arquivos obsoletos embutidos no pacote: 
@@ -235,20 +193,15 @@ Compile os cabeçalhos e os instale na raiz falsa do sistema que estamos constru
 make headers_install HOSTCC=/usr/bin/clang ARCH=x86 INSTALL_HDR_PATH=$SYSROOT/usr
 ```
 
-# • Cabeçalhos do Musl
-
-```
-etc
-```
-
-```
-etc
-```
-
 # • Musl
 
+Aplique as correções de segurança usando esse loop que aplica todas as correções:
+
 ```
-etc
+for patch in $PARDAL/sources/patches/musl/*.patch; do
+    echo "Aplicando $patch..."
+    patch -Np1 -i < "$patch" || exit 1
+done
 ```
 
 ```
