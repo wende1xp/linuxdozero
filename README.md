@@ -137,7 +137,7 @@ Finalmente, para garantir que o ambiente esteja totalmente preparado para a cons
 source ~/.bash_profile
 ```
 
-Agora iremos compilar o clang inicial para compilar os cabeçalhos do kernel posteriormente.
+Agora iremos compilar o compilador inicial para compilar os cabeçalhos do kernel posteriormente.
 
 Entre no diretório do pacote llvm:
 
