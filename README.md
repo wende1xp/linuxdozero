@@ -203,10 +203,10 @@ Certifique-se de que não existem arquivos obsoletos embutidos no pacote:
 make mrproper CC=clang
 ```
 
-Compile os cabeçalhos e os instale na raiz falsa do sistema que estamos construindo:
+Compile os cabeçalhos e os instale na raiz do sistema que estamos construindo:
 
 ```
-make headers_install HOSTCC=/usr/bin/clang ARCH=x86 INSTALL_HDR_PATH=$PARDAL/usr
+make headers_install HOSTCC=$STAGE1/usr/bin/clang ARCH=x86 INSTALL_HDR_PATH=$PARDAL/usr
 ```
 
 # • Musl
