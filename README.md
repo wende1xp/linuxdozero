@@ -52,7 +52,7 @@ Baixe esse repositório e copie os patches e a lista de pacotes:
 cd $PARDAL/sources/files
 git clone https://gitlab.com/pardal-linux/bootstrap.git
 cp -rv bootstrap/patches/* ../patches
-cp bootstrap/sources/source_pkgs.list ../sources
+cp bootstrap/sources/source_pkgs.list .
 ```
 
 Remova o repositório pois não será mais necessário:
