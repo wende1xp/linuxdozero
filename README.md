@@ -64,7 +64,7 @@ rm -rf bootstrap
 Use o arquivo source_pkgs.list para baixar todos os pacotes necessários:
 
 ```
-wget --input-file=$PARDAL/sources/source_pkgs.list --continue --directory-prefix=$PARDAL/sources/pkgs
+wget --input-file=$PARDAL/sources/files/source_pkgs.list --continue --directory-prefix=$PARDAL/sources/pkgs
 ```
 
 Agora conceda ao usuário builder as permissões adequadas:
