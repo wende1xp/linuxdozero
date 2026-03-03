@@ -23,7 +23,7 @@ passwd builder
 Crie o layout exigido de diretório emitindo os seguintes comandos:
 
 ```
-mkdir -vp "$PARDAL"/sources/{patches/{musl,llvm},files,pkgs}
+mkdir -vp "$PARDAL"/sources/{patches,files,pkgs}
 mkdir -vp "$PARDAL"/{stage1,stage2,boot,dev,proc,sys,run,tmp,home,mnt,etc,opt}
 mkdir -vp "$PARDAL"/etc/init.d
 mkdir -vp "$PARDAL/usr"/{bin,sbin,lib,share}
