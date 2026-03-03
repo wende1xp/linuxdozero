@@ -6,7 +6,7 @@ Para começarmos fiz um script que já cria uma imagem e monta deixando no ponto
 
 # **Fase 0 - Preparação**
 
-# • Preparando o ambiente e criando o usuário builder
+Exporte uma variável apontando pro caminho que será usado para construir o sistema, nesse caso a variável será chamade de PARDAL e o caminho será /mnt/working.
 
 ```
 export PARDAL=/mnt/working 
@@ -23,7 +23,7 @@ passwd builder
 Crie o layout exigido de diretório emitindo os seguintes comandos:
 
 ```
-mkdir -vp "$PARDAL"/sources/{patches/{musl,llvm},pkgs}
+mkdir -vp "$PARDAL"/sources/{patches/{musl,llvm},files,pkgs}
 mkdir -vp "$PARDAL"/{stage1,stage2,boot,dev,proc,sys,run,tmp,home,mnt,etc,opt}
 mkdir -vp "$PARDAL"/etc/init.d
 mkdir -vp "$PARDAL/usr"/{bin,sbin,lib,share}
@@ -46,16 +46,25 @@ ln -sv usr/lib "$PARDAL/lib"
 ln -sv lib "$PARDAL/usr/lib64"
 ```
 
-Baixe o arquivo source_pkgs.list desse repositório e execute o comando a seguir para baixar os pacotes. Obs.: Se o arquivo estiver em uma pasta diferente da pasta onde você está, coloque o caminho completo para o arquivo (Ex.: /home/user/Downloads/source_pkgs.list):
+Baixe esse repositório e copie os patches e a lista de pacotes:
 
 ```
-wget --input-file=source_pkgs.list --continue --directory-prefix=$PARDAL/sources/pkgs
+cd $PARDAL/sources/files
+git clone https://gitlab.com/pardal-linux/bootstrap.git
+cp -rv bootstrap/patches/* ../patches
+cp bootstrap/sources/source_pkgs.list ../sources
 ```
 
-Também baixe os patches:
+Remova o repositório pois não será mais necessário:
 
 ```
-wget --input-file=musl_patches.list --continue --directory-prefix=$PARDAL/sources/patches/musl
+rm -rf bootstrap
+```
+
+Use o arquivo source_pkgs.list para baixar todos os pacotes necessários:
+
+```
+wget --input-file=$PARDAL/sources/source_pkgs.list --continue --directory-prefix=$PARDAL/sources/pkgs
 ```
 
 Agora conceda ao usuário builder as permissões adequadas:
@@ -64,7 +73,15 @@ Agora conceda ao usuário builder as permissões adequadas:
 chown -R builder:builder $PARDAL
 ```
 
-# • Entrando no usuário builder
+# • Aviso vindo do livro Linux From Scratch
+
+Muitas distribuições comerciais acrescentam uma instância não documentada de /etc/bash.bashrc à inicialização do bash. Esse arquivo tem o potencial de modificar o ambiente do(a) usuário(a) builder de formas que podem afetar a construção de pacotes críticos. Para assegurar que o ambiente do(a) usuário(a) builder esteja limpo, verifique a presença de /etc/bash.bashrc e, se presente, mova-o para fora do caminho. Como o(a) usuário(a) root, execute: 
+
+```
+[ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.NOUSE
+```
+
+# **Fase 1 - Configurando o ambiente do usuário e construindo o compilador inicial**
 
 Agora entre com o usuário builder e configure o ambiente:
 
@@ -99,16 +116,6 @@ export PARDAL STAGE1 SYSTARGET LC_ALL PATH
 EOF
 ```
 
-# • Aviso vindo do livro Linux From Scratch
-
-Muitas distribuições comerciais acrescentam uma instância não documentada de /etc/bash.bashrc à inicialização do bash. Esse arquivo tem o potencial de modificar o ambiente do(a) usuário(a) builder de formas que podem afetar a construção de pacotes críticos. Para assegurar que o ambiente do(a) usuário(a) builder esteja limpo, verifique a presença de /etc/bash.bashrc e, se presente, mova-o para fora do caminho. Como o(a) usuário(a) root, execute: 
-
-```
-[ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.NOUSE
-```
-
-# • Continuando a configurar o ambiente
-
 Caso deseje deixar o uso de todos os núcleos explícito, execute o seguinte comando:
 
 ```
@@ -131,13 +138,13 @@ unset CXXFLAGS
 EOF
 ```
 
-Finalmente, para garantir que o ambiente esteja totalmente preparado para a construção das ferramentas temporárias, force o shell bash a ler o perfil do(a) novo(a) usuário(a):
+Finalmente, para garantir que o ambiente esteja totalmente preparado para a construção das ferramentas temporárias, force o shell bash a ler o perfil do novo usuário:
 
 ```
 source ~/.bash_profile
 ```
 
-Agora iremos compilar o compilador inicial para compilar os cabeçalhos do kernel posteriormente.
+# • Construção do compilador inicial
 
 Entre no diretório do pacote llvm:
 
@@ -174,17 +181,17 @@ ninja -C build
 ninja -C build install
 ```
 
-# **Fase 1 - Ferramentas de Compilação Cruzada inicial**
+Esse compilador é construído apontado para o host, sendo necessário para construir as dependências necessárias para construir um compilador isolado do host.
 
-É aqui que iremos compilar as ferramentas necessárias para tornar o sistema independente do host. Você DEVE está na pasta do pacote a ser compilado.
+# **Fase 2 - Ferramentas de Compilação Cruzada inicial**
+
+É aqui que iremos compilar as ferramentas necessárias para tornar o sistema independente do host usando nosso compilador inicial. Fique ciente que você DEVE está na pasta do pacote a ser compilado.
 
 Antes de começarmos a compilar qualquer pacote, defina as variáveis:
 
 ```
 export CC="clang --target=$SYSTARGET --sysroot=$SYSROOT"
 export CXX="clang++ --target=$SYSTARGET --sysroot=$SYSROOT"
-export AR="llvm-ar"
-export RANLIB="llvm-ranlib"
 export LD="ld.lld"
 ```
 
@@ -204,7 +211,7 @@ make headers_install HOSTCC=/usr/bin/clang ARCH=x86 INSTALL_HDR_PATH=$PARDAL/usr
 
 # • Musl
 
-Aplique as correções de segurança usando esse loop que aplica todas as correções:
+Aplique as correções de segurança usando esse loop que aplica todas elas automaticamente:
 
 ```
 for patch in $PARDAL/sources/patches/musl/*.patch; do
@@ -214,5 +221,5 @@ done
 ```
 
 ```
-etc
+
 ```
