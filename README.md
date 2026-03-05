@@ -246,12 +246,32 @@ Esse compilador é construído apontado para o host, sendo necessário para cons
 
 É aqui que iremos compilar as ferramentas necessárias para tornar o sistema independente do host usando nosso compilador inicial. Fique ciente que você DEVE está na pasta do pacote a ser compilado.
 
-Antes de começarmos a compilar qualquer pacote, defina as variáveis:
+Antes de começarmos a compilar qualquer pacote, defina as variáveis com esses comandos:
 
 ```
-export CC="clang --target=$SYSTARGET --sysroot=$SYSROOT"
-export CXX="clang++ --target=$SYSTARGET --sysroot=$SYSROOT"
-export LD="ld.lld"
+export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$WORKDIR -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$WORKDIR -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export AR="$STAGE1/bin/llvm-ar"
+export RANLIB="$STAGE1/bin/llvm-ranlib"
+export LD="$STAGE1/bin/ld.lld"
+export CFLAGS="-Wno-unused-command-line-argument"
+```
+
+Ou, se preferir pode deixar as variáveis salvas no arquivo de confiração de usuário, mas modificaremos as variáveis quando chegarmos ao stage2.
+
+```
+cat >> ~/.bashrc << 'EOF'
+
+
+export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$WORKDIR -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$WORKDIR -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export AR="$STAGE1/bin/llvm-ar"
+export RANLIB="$STAGE1/bin/llvm-ranlib"
+export LD="$STAGE1/bin/ld.lld"
+export CFLAGS="-Wno-unused-command-line-argument"
+
+
+EOF
 ```
 
 # • Cabeçalhos da API do Linux 6.19.5
