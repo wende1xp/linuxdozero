@@ -200,7 +200,7 @@ Para posteriormente compilarmos a nossa biblioteca C inicial (LLVM) precisamos d
 Primeiro entre na pasta do compiler-rt:
 
 ```
-cd $PARDAL/sources/pkgs/llvm-project-21.1.8.src/compiler-rt/lib/builtins
+cd $PARDAL/sources/pkgs/llvm-project-21.1.8.src/runtimes
 ```
 
 Configure a compilação:
@@ -214,16 +214,23 @@ cmake -G Ninja \
   -DCMAKE_CXX_COMPILER=$STAGE1/bin/clang++ \
   -DCMAKE_AR=$STAGE1/bin/llvm-ar \
   -DCMAKE_RANLIB=$STAGE1/bin/llvm-ranlib \
+  -DLLVM_ENABLE_RUNTIMES="compiler-rt" \
   -DCOMPILER_RT_BUILD_BUILTINS=ON \
   -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
   -DCOMPILER_RT_BUILD_XRAY=OFF \
   -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
   -DCOMPILER_RT_BUILD_PROFILE=OFF \
   -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
+  -DCOMPILER_RT_EXCLUDE_COMPLEX_BUILTINS=OFF \
   -DCMAKE_C_COMPILER_TARGET=$SYSTARGET \
   -DCMAKE_CXX_COMPILER_TARGET=$SYSTARGET \
   -DCMAKE_ASM_COMPILER_TARGET=$SYSTARGET \
-  -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
+  -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY \
+  -DCMAKE_NO_SYSTEM_FROM_IMPORTED=ON \
+  -DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
+  -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=ONLY \
+  -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY \
+  -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY
 ```
 
 Compile e instale:
@@ -301,15 +308,21 @@ Aplique as correções de segurança usando esse loop que aplica todas elas auto
 ```
 for patch in $PARDAL/sources/patches/musl/*.patch; do
     echo "Aplicando $patch..."
-    patch -Np1 -i < "$patch" || exit 1
+    patch -Np1 --quiet < "$patch" || exit 1
 done
 ```
 
 Configure a compilação:
 
 ```
-./configure \
-  --prefix=/usr \
+./configure --prefix=/usr \
   --syslibdir=/lib \
   --target=$SYSTARGET
+```
+
+Compile e instale:
+
+```
+make
+make DESTDIR=$STAGE1 install
 ```
