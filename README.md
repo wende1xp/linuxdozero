@@ -181,6 +181,47 @@ cmake -G Ninja \
 ninja -C build
 ninja -C build install
 ```
+Após isso remova o diretório de compilação para liberar armazenamento:
+
+```
+rm -rf build
+```
+
+Para posteriormente compilarmos a nossa biblioteca C inicial (LLVM)precisamos de bibliotecas de tempo de execução (compiler-rt). O nosso compilador possui um que podemos compilar com os seguintes comandos:
+
+Primeiro entre na pasta do compiler-rt:
+
+```
+cd $PARDAL/sources/pkgs/llvm-project-21.1.8.src/compiler-rt/lib/builtins
+```
+
+```
+cmake -G Ninja \
+  -B build \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$STAGE1 \
+  -DCMAKE_C_COMPILER=$STAGE1/bin/clang \
+  -DCMAKE_CXX_COMPILER=$STAGE1/bin/clang++ \
+  -DCMAKE_AR=$STAGE1/bin/llvm-ar \
+  -DCMAKE_RANLIB=$STAGE1/bin/llvm-ranlib \
+  -DCOMPILER_RT_BUILD_BUILTINS=ON \
+  -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
+  -DCOMPILER_RT_BUILD_XRAY=OFF \
+  -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+  -DCOMPILER_RT_BUILD_PROFILE=OFF \
+  -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
+  -DCMAKE_C_COMPILER_TARGET=$SYSTARGET \
+  -DCMAKE_CXX_COMPILER_TARGET=$SYSTARGET \
+  -DCMAKE_ASM_COMPILER_TARGET=$SYSTARGET \
+  -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
+```
+
+Compile e instale:
+
+```
+ninja -C build
+ninja -C build install
+```
 
 Esse compilador é construído apontado para o host, sendo necessário para construir as dependências necessárias para construir um compilador isolado do host.
 
