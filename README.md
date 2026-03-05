@@ -302,7 +302,8 @@ Configure a compilação:
 ```
 ./configure --prefix=/usr \
   --syslibdir=/lib \
-  --target=$SYSTARGET
+  --target=$SYSTARGET \
+  --disable-complex
 ```
 
 Compile e instale:
