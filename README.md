@@ -197,29 +197,32 @@ Configure a compilação:
 
 ```
 cmake -G Ninja -B build \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX=$STAGE1 \
-  -DCMAKE_C_COMPILER=$STAGE1/bin/clang \
-  -DCMAKE_CXX_COMPILER=$STAGE1/bin/clang++ \
-  -DCMAKE_AR=$STAGE1/bin/llvm-ar \
-  -DCMAKE_RANLIB=$STAGE1/bin/llvm-ranlib \
-  -DCOMPILER_RT_BUILD_BUILTINS=ON \
-  -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
-  -DCOMPILER_RT_BUILD_XRAY=OFF \
-  -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
-  -DCOMPILER_RT_BUILD_PROFILE=OFF \
-  -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
-  -DCMAKE_C_COMPILER_TARGET=$SYSTARGET \
-  -DCMAKE_CXX_COMPILER_TARGET=$SYSTARGET \
-  -DCMAKE_ASM_COMPILER_TARGET=$SYSTARGET \
-  -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=$STAGE1 \
+ -DCMAKE_C_COMPILER=$STAGE1/bin/clang \
+ -DCMAKE_AR=$STAGE1/bin/llvm-ar \
+ -DCMAKE_RANLIB=$STAGE1/bin/llvm-ranlib \
+ -DCOMPILER_RT_BUILD_BUILTINS=ON \
+ -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
+ -DCOMPILER_RT_BUILD_XRAY=OFF \
+ -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+ -DCOMPILER_RT_BUILD_PROFILE=OFF \
+ -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
+ -DCMAKE_C_COMPILER_TARGET=$SYSTARGET \
+ -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
 ```
 
 Compile e instale:
 
 ```
-ninja -C build
+ninja -C build builtins
 ninja -C build install
+```
+
+Faça um link simbólico para resolver problema de compatibilidade com o musl:
+
+```
+ln -sv $STAGE1/lib/linux/libclang_rt.builtins-x86_64.a $STAGE1/lib/
 ```
 
 E, finalmente, remova o diretório llvm:
@@ -294,16 +297,10 @@ for patch in $PARDAL/sources/patches/musl/*.patch; do
 done
 ```
 
-Por enquanto, removeremos essas funções por depender de certos builtins do compiler-rt que não estão presente:
-
-```
-rm -rf src/complex
-```
-
 Configure a compilação:
 
 ```
-rm -rf src/complex
+./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET
 ```
 
 Compile e instale:
