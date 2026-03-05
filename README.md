@@ -294,12 +294,16 @@ for patch in $PARDAL/sources/patches/musl/*.patch; do
 done
 ```
 
+Por enquanto, removeremos essas funções por depender de certos builtins do compiler-rt que não estão presente:
+
+```
+rm -rf src/complex
+```
+
 Configure a compilação:
 
 ```
-./configure --prefix=/usr \
-  --syslibdir=/lib \
-  --target=$SYSTARGET
+rm -rf src/complex
 ```
 
 Compile e instale:
