@@ -305,6 +305,11 @@ for patch in $PARDAL/sources/patches/musl/*.patch; do
 done
 ```
 
-```
+Configure a compilação:
 
+```
+./configure \
+  --prefix=/usr \
+  --syslibdir=/lib \
+  --target=$SYSTARGET
 ```
