@@ -188,6 +188,7 @@ Compile e instale:
 ninja -C build
 ninja -C build install
 ```
+
 Após isso remova o diretório de compilação para liberar armazenamento:
 
 ```
@@ -228,6 +229,13 @@ Compile e instale:
 ```
 ninja -C build
 ninja -C build install
+```
+
+E, finalmente, remova o diretório llvm:
+
+```
+cd $PARDAL/sources/pkgs/llvm-project-21.1.8.src
+rm -rf llvm-project-21.1.8.src
 ```
 
 Esse compilador é construído apontado para o host, sendo necessário para construir as dependências necessárias para construir um compilador isolado do host.
