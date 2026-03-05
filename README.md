@@ -274,6 +274,12 @@ export CFLAGS="-Wno-unused-command-line-argument"
 EOF
 ```
 
+Se preferiu salvar as variáveis no arquivo de confiração, você precisa carregar a nova configuração para que as novas variáveis sejam carregadas. Use esse comando para carregar as novas variáveis:
+
+```
+source ~/.bash_profile
+```
+
 # • Cabeçalhos da API do Linux 6.19.5
 
 Certifique-se de que não existem arquivos obsoletos embutidos no pacote: 
