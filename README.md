@@ -190,7 +190,7 @@ Para posteriormente compilarmos a nossa biblioteca C inicial (LLVM) precisamos d
 Primeiro entre na pasta do compiler-rt:
 
 ```
-cd $PARDAL/sources/pkgs/llvm-project-21.1.8.src/compiler-rt/lib/builtins
+cd $PARDAL/sources/pkgs/llvm-project-21.1.8.src/compiler-rt
 ```
 
 Configure a compilação:
