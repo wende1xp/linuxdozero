@@ -146,14 +146,17 @@ source ~/.bash_profile
 
 # • Construção do compilador inicial
 
-Entre no diretório do pacote llvm:
+Extraia o pacote e entre no diretório do pacote llvm:
 
 ```
 cd $PARDAL/sources/pkgs
 tar -xf llvm-project-21.1.8.src.tar.xz
-
 cd llvm-project-21.1.8.src
+```
 
+Configure a compilação:
+
+```
 cmake -G Ninja \
   -S llvm \
   -B build \
@@ -177,7 +180,11 @@ cmake -G Ninja \
   -DCOMPILER_RT_BUILD_PROFILE=OFF \
   -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
   -DCOMPILER_RT_ENABLE_RTSAN=OFF
+```
 
+Compile e instale:
+
+```
 ninja -C build
 ninja -C build install
 ```
@@ -187,7 +194,7 @@ Após isso remova o diretório de compilação para liberar armazenamento:
 rm -rf build
 ```
 
-Para posteriormente compilarmos a nossa biblioteca C inicial (LLVM)precisamos de bibliotecas de tempo de execução (compiler-rt). O nosso compilador possui um que podemos compilar com os seguintes comandos:
+Para posteriormente compilarmos a nossa biblioteca C inicial (LLVM) precisamos de bibliotecas de tempo de execução (compiler-rt). O nosso compilador possui um que podemos compilar com os seguintes comandos:
 
 Primeiro entre na pasta do compiler-rt:
 
