@@ -1,7 +1,7 @@
 Entre no diretório que contém os pacotes:
 
 ```
-cd $PARDAL/sources/pkgs
+cd $BUILDDIR/sources/pkgs
 ```
 
 # • Cabeçalhos da API do Linux 6.19.5
@@ -23,7 +23,7 @@ make headers_install HOSTCC=/usr/bin/clang ARCH=x86_64 INSTALL_HDR_PATH=$STAGE1/
 Aplique as correções de segurança usando esse loop que aplica todas elas automaticamente:
 
 ```
-for patch in $PARDAL/sources/patches/musl/*.patch; do
+for patch in $BUILDDIR/sources/patches/musl/*.patch; do
     echo "Aplicando $patch..."
     patch -Np1 --quiet < "$patch" || exit 1
 done
@@ -43,14 +43,6 @@ make DESTDIR=$STAGE1 install
 ```
 
 # • Clang
-
-Extraia o pacote e entre no diretório do pacote llvm:
-
-```
-cd $PARDAL/sources/pkgs
-tar -xf llvm-project-21.1.8.src.tar.xz
-cd llvm-project-21.1.8.src
-```
 
 Configure a compilação:
 
@@ -88,7 +80,7 @@ Para posteriormente compilarmos a nossa biblioteca C inicial (LLVM) precisamos d
 Primeiro entre na pasta do compiler-rt:
 
 ```
-cd $PARDAL/sources/pkgs/llvm-project-21.1.8.src/compiler-rt
+cd $BUILDDIR/sources/pkgs/llvm-project-21.1.8.src/compiler-rt
 ```
 
 Configure a compilação:
@@ -119,9 +111,10 @@ ninja -C build install-builtins
 E, finalmente, remova o diretório llvm:
 
 ```
-cd $PARDAL/sources/pkgs
+cd $BUILDDIR/sources/pkgs
 rm -rf llvm-project-21.1.8.src
 ```
 
 Esse compilador é construído apontado para o host, sendo necessário para construir as dependências necessárias para construir um compilador isolado do host.
+
 
