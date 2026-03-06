@@ -1,3 +1,5 @@
+Este capítulo mostra como construir um compilador cruzado e as ferramentas associadas usando o ambiente do sistema host. Os programas compilados neste capítulo serão instalados sob o diretório $LFS/tools para mantê-los separados dos arquivos instalados nos capítulos seguintes.
+
 Entre no diretório que contém os pacotes:
 
 ```
@@ -42,7 +44,9 @@ make
 make DESTDIR=$STAGE1 install
 ```
 
-# • Clang
+# • LLVM (fase 1)
+
+Esse vai ser o nosso compilador inicial, necessário para construir as dependências do compilador da fase 2.
 
 Configure a compilação:
 
@@ -116,5 +120,6 @@ rm -rf llvm-project-21.1.8.src
 ```
 
 Esse compilador é construído apontado para o host, sendo necessário para construir as dependências necessárias para construir um compilador isolado do host.
+
 
 
