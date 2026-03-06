@@ -8,7 +8,7 @@
 </details>
 
 <details>
-<summary>🛠 Capítulo 3 — Configuração</summary>
+<summary>🛠 Capítulo 2 — Configurando o ambiente do usuário e construindo o compilador inicial</summary>
 
 ::include{file=capitulos/03-configuracao.md}
 
