@@ -1,5 +1,3 @@
-# **Capítulo 1 - Configurando o ambiente do usuário e construindo o compilador inicial**
-
 Agora entre com o usuário builder e configure o ambiente:
 
 ```
