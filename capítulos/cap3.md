@@ -1,4 +1,4 @@
-É aqui que iremos compilar as ferramentas necessárias para tornar o sistema independente do host usando nosso compilador inicial. Fique ciente que você DEVE está na pasta do pacote a ser compilado.
+É aqui que iremos compilar as ferramentas necessárias para tornar o sistema independente do host usando nosso compilador inicial.
 
 Antes de começarmos a compilar qualquer pacote, defina as variáveis com esses comandos:
 
