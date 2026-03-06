@@ -8,7 +8,7 @@
 </details>
 
 <details>
-<summary>🛠 Capítulo 2 — Configurando o ambiente do usuário e construindo o compilador inicial</summary>
+<summary>🛠 Capítulo 2 — Construindo a suíte de ferramentas iniciais</summary>
 
 ::include{file=capítulos/cap2.md}
 
