@@ -11,7 +11,7 @@ export LD="$STAGE1/bin/ld.lld"
 export CFLAGS="-Wno-unused-command-line-argument"
 ```
 
-Ou, se preferir pode deixar as variáveis salvas no arquivo de confiração de usuário, mas modificaremos as variáveis quando chegarmos ao stage2.
+Ou, se preferir pode deixar as variáveis salvas no arquivo de configuração do usuário, porém, depois teremos que modificar as variáveis quando trocar para a suíte de ferramentas do stage2.
 
 ```
 cat >> ~/.bashrc << 'EOF'
