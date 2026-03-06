@@ -1,0 +1,82 @@
+É aqui que iremos compilar as ferramentas necessárias para tornar o sistema independente do host usando nosso compilador inicial. Fique ciente que você DEVE está na pasta do pacote a ser compilado.
+
+Antes de começarmos a compilar qualquer pacote, defina as variáveis com esses comandos:
+
+```
+export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export AR="$STAGE1/bin/llvm-ar"
+export RANLIB="$STAGE1/bin/llvm-ranlib"
+export LD="$STAGE1/bin/ld.lld"
+export CFLAGS="-Wno-unused-command-line-argument"
+```
+
+Ou, se preferir pode deixar as variáveis salvas no arquivo de confiração de usuário, mas modificaremos as variáveis quando chegarmos ao stage2.
+
+```
+cat >> ~/.bashrc << 'EOF'
+
+
+export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export AR="$STAGE1/bin/llvm-ar"
+export RANLIB="$STAGE1/bin/llvm-ranlib"
+export LD="$STAGE1/bin/ld.lld"
+export CFLAGS="-Wno-unused-command-line-argument"
+
+
+EOF
+```
+
+Se preferiu salvar as variáveis no arquivo de confiração, você precisa carregar a nova configuração para que as novas variáveis sejam carregadas. Use esse comando para carregar as novas variáveis:
+
+```
+source ~/.bash_profile
+```
+
+# • Cabeçalhos da API do Linux 6.19.5
+
+Certifique-se de que não existem arquivos obsoletos embutidos no pacote: 
+
+```
+make mrproper CC=clang
+```
+
+Compile os cabeçalhos e os instale na raiz do sistema que estamos construindo:
+
+```
+make headers_install HOSTCC=/usr/bin/clang ARCH=x86_64 INSTALL_HDR_PATH=$STAGE1/usr
+```
+
+# • Musl
+
+Aplique as correções de segurança usando esse loop que aplica todas elas automaticamente:
+
+```
+for patch in $PARDAL/sources/patches/musl/*.patch; do
+    echo "Aplicando $patch..."
+    patch -Np1 --quiet < "$patch" || exit 1
+done
+```
+
+Configure a compilação:
+
+```
+./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET
+```
+
+Compile e instale:
+
+```
+make LIBCC="$STAGE1/lib/linux/libclang_rt.builtins-x86_64.a"
+make DESTDIR=$STAGE1 install
+```
+
+Faça um link simbólico para evitar problemas na compilação:
+
+```
+mkdir -p $STAGE1/lib/clang/21/lib/x86_64-pardal-linux-musl
+ln -sv $STAGE1/lib/linux/libclang_rt.builtins-x86_64.a $STAGE1/lib/clang/21/lib/x86_64-pardal-linux-musl/libclang_rt.builtins.a
+```
+
+Não apague o diretório do musl pois vamos usar ele na próxima fase
