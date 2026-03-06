@@ -50,12 +50,6 @@ make headers_install HOSTCC=/usr/bin/clang ARCH=x86_64 INSTALL_HDR_PATH=$STAGE1/
 
 # • Musl
 
-Remova resquícios da antiga compilação:
-
-```
-make clean
-```
-
 Configure a compilação:
 
 ```
