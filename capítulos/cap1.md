@@ -83,3 +83,64 @@ Renomeie esse o arquvio bash.bashrc para evitar alguma chance de alguma instânc
 ```
 [ ! -e /etc/bash.bashrc ] || mv -v /etc/bash.bashrc /etc/bash.bashrc.NOUSE
 ```
+
+Agora entre com o novo usuário:
+
+```
+su - builder
+```
+
+Configure um bom ambiente de trabalho criando dois novos arquivos de inicialização para o shell bash:
+
+```
+cat > ~/.bash_profile << "EOF"
+exec env -i HOME=$HOME TERM=$TERM PS1='\u:\w\$ ' /bin/bash
+EOF
+```
+
+```
+cat > ~/.bashrc << "EOF"
+set +h
+umask 022
+
+PARDAL=/mnt/working
+
+STAGE1=$PARDAL/stage1
+STAGE2=$PARDAL/stage2
+
+SYSTARGET=x86_64-pardal-linux-musl
+
+LC_ALL=POSIX
+PATH=$STAGE1/bin:/usr/bin:/bin
+
+export PARDAL STAGE1 SYSTARGET LC_ALL PATH
+EOF
+```
+
+Caso deseje deixar o uso de todos os núcleos explícito, execute o seguinte comando:
+
+```
+cat >> ~/.bashrc << "EOF"
+export MAKEFLAGS=-j$(nproc)
+EOF
+```
+
+Substitua "$(nproc)" pelo número de núcleos lógicos que você deseja usar se não quiser usar todos os núcleos lógicos.
+
+CFLAGS e CXXFLAGS não devem ser configurados durante a construção de ferramentas cruzadas. Execute os seguinte comando para evitar isso.
+
+```
+unset CFLAGS
+unset CXXFLAGS
+
+cat >> ~/.bashrc << EOF
+unset CFLAGS
+unset CXXFLAGS
+EOF
+```
+
+Finalmente, para garantir que o ambiente esteja totalmente preparado para a construção das ferramentas temporárias, force o shell bash a ler o perfil do novo usuário:
+
+```
+source ~/.bash_profile
+```
