@@ -212,6 +212,18 @@ cd llvm-project-21.1.8.src
 
 Configure a compilação:
 
+cmake -G Ninja -S llvm -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=$STAGE1 \
+ -DLLVM_ENABLE_PROJECTS="clang;lld" \
+ -DLLVM_TARGETS_TO_BUILD="X86" \
+ -DLLVM_DEFAULT_TARGET_TRIPLE=$SYSTARGET \
+ -DCLANG_DEFAULT_SYSROOT=$STAGE1 \
+ -DLLVM_ENABLE_THREADS=OFF \
+ -DLLVM_ENABLE_TERMINFO=OFF \
+ -DLLVM_ENABLE_ZLIB=OFF \
+ -DLLVM_ENABLE_ZSTD=OFF
+
 ```
 cmake -G Ninja -S llvm -B build \
   -DCMAKE_BUILD_TYPE=Release \
