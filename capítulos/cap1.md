@@ -54,9 +54,9 @@ Baixe esse repositório e copie os patches e a lista de pacotes:
 
 ```
 cd $BUILDDIR/sources/files
-git clone https://gitlab.com/pardal-linux/bootstrap.git
-cp -rv bootstrap/patches/* ../patches
-cp bootstrap/sources/source_pkgs.list .
+git clone https://github.com/wende1xp/linuxdozero.git
+cp -rv linuxdozero/patches/* ../patches
+cp linuxdozero/sources/source_pkgs.list .
 ```
 
 Remova o repositório pois não será mais necessário:
@@ -165,3 +165,4 @@ Finalmente, para garantir que o ambiente esteja totalmente preparado para a cons
 source ~/.bash_profile
 
 ```
+
