@@ -12,13 +12,13 @@ BOOTSIZE="1G"
 NBDDIR=/dev/nbd0
 NBDDIRP1=/dev/nbd0p1
 NBDDIRP2=/dev/nbd0p2
-ROOTLABELNAME="Pardal Linux"
+ROOTLABELNAME="Linux do Zero"
 BOOTLABELNAME="boot"
 
 P1MOUNT_DIR=/mnt/working/boot
 P2MOUNT_DIR=/mnt/working
 
-#BACKUPFILE=/home/wendel/Pardal/backup/pardal-pre-cap8.tar.xz
+#BACKUPFILE=
 
 # Prepara ambiente
 
