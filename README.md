@@ -227,7 +227,7 @@ ln -sv $STAGE1/lib/linux/libclang_rt.builtins-x86_64.a $STAGE1/lib/
 E, finalmente, remova o diretório llvm:
 
 ```
-cd $PARDAL/sources/pkgs/llvm-project-21.1.8.src
+cd $PARDAL/sources/pkgs
 rm -rf llvm-project-21.1.8.src
 ```
 
