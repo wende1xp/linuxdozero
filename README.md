@@ -1,15 +1,5 @@
-::include{file=capítulos/cap0.md}
+# Livro
 
-<details>
-<summary>⚙️ Capítulo 1 — Preparação</summary>
-
-::include{file=capítulos/cap1.md}
-
-</details>
-
-<details>
-<summary>🛠 Capítulo 2 — Construindo a suíte de ferramentas iniciais</summary>
-
-::include{file=capítulos/cap2.md}
-
-</details>
+- [Capítulo 0](capítulos/cap0.md)
+- [Capítulo 1](capítulos/cap1.md)
+- [Capítulo 2](capítulos/cap2.md)
