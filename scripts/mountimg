@@ -4,7 +4,7 @@ set -euo pipefail
 
 IMGDIR=/mnt
 IMGFMT="qcow2"
-IMGNAME=pardal.$IMGFMT
+IMGNAME=linuxdozero.$IMGFMT
 
 P1MOUNT_DIR=/mnt/working/boot
 P2MOUNT_DIR=/mnt/working
