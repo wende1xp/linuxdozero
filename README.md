@@ -10,6 +10,8 @@ Entre no usuário root e exporte uma variável apontando pro caminho que será u
 
 ```
 export PARDAL=/mnt/working 
+export STAGE1=/mnt/working/stage1
+export STAGE2=/mnt/working/stage2
 ```
 
 Agora adicione um usuário para evita contaminar o sistema host e garantir builds reproduzíveis:
@@ -28,7 +30,6 @@ mkdir -vp "$PARDAL"/{stage1,stage2,boot,dev,proc,sys,run,tmp,home,mnt,etc,opt}
 mkdir -vp "$PARDAL"/etc/init.d
 mkdir -vp "$PARDAL/usr"/{bin,sbin,lib,share}
 mkdir -vp "$PARDAL/var"/{log,run,cache,tmp,lib}
-
 mkdir -pv $STAGE1/usr/{bin,sbin,lib,include,share}
 mkdir -pv $STAGE2/usr/{bin,sbin,lib,include,share}
 
