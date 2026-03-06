@@ -10,6 +10,6 @@
 <details>
 <summary>🛠 Capítulo 2 — Configurando o ambiente do usuário e construindo o compilador inicial</summary>
 
-::include{file=capitulos/03-configuracao.md}
+::include{file=capitulos/cap2.md}
 
 </details>
