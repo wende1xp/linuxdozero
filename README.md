@@ -1,2 +1,2 @@
 ## Capítulo 1
-::include{file=capitulos/cap1.md}
+::include{file=capítulos/cap1.md}
