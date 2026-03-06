@@ -28,6 +28,17 @@ mkdir -vp "$PARDAL"/{stage1,stage2,boot,dev,proc,sys,run,tmp,home,mnt,etc,opt}
 mkdir -vp "$PARDAL"/etc/init.d
 mkdir -vp "$PARDAL/usr"/{bin,sbin,lib,share}
 mkdir -vp "$PARDAL/var"/{log,run,cache,tmp,lib}
+
+mkdir -pv $STAGE1/usr/{bin,sbin,lib,include,share}
+mkdir -pv $STAGE2/usr/{bin,sbin,lib,include,share}
+
+ln -sv usr/bin $STAGE2/bin
+ln -sv usr/sbin $STAGE2/sbin
+ln -sv usr/lib $STAGE2/lib
+
+ln -sv usr/bin $STAGE1/bin
+ln -sv usr/sbin $STAGE1/sbin
+ln -sv usr/lib $STAGE1/lib
 ```
 
 Ajuste permissões:
@@ -314,14 +325,18 @@ Não apague o diretório do musl pois vamos usar ele na próxima fase
 
 # **Fase 3 - Compilando as ferramentas do stage2**
 
-Crie a árvore de diretórios para stage2:
+# • Cabeçalhos da API do Linux 6.19.5
+
+Certifique-se de que não existem arquivos obsoletos embutidos no pacote: 
 
 ```
-mkdir -pv $STAGE2/usr/{bin,sbin,lib,include,share}
+make mrproper CC=clang
+```
 
-ln -sv usr/bin $STAGE2/bin
-ln -sv usr/sbin $STAGE2/sbin
-ln -sv usr/lib $STAGE2/lib
+Compile os cabeçalhos e os instale na raiz do sistema que estamos construindo:
+
+```
+make headers_install HOSTCC=/usr/bin/clang ARCH=x86_64 INSTALL_HDR_PATH=$STAGE1/usr
 ```
 
 # • Musl
