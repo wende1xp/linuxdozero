@@ -184,7 +184,7 @@ done
 Configure a compilação:
 
 ```
-./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
+CC=/usr/bin/clang ./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
 ```
 
 Compile e instale:
