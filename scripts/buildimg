@@ -5,8 +5,8 @@ set -euo pipefail
 MNTDIR=/mnt
 IMGDIR="${MNTDIR}"
 IMGFMT="qcow2"
-IMGNAME=pardal.$IMGFMT
-IMGSIZE="35G"
+IMGNAME=linuxdozero.$IMGFMT
+IMGSIZE="10G"
 BOOTSIZE="1G"
 
 NBDDIR=/dev/nbd0
