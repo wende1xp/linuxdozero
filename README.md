@@ -218,12 +218,6 @@ Compile e instale:
 ninja -C build install-builtins
 ```
 
-Faça um link simbólico para resolver problema de compatibilidade com o musl:
-
-```
-ln -sv $STAGE1/lib/linux/libclang_rt.builtins-x86_64.a $STAGE1/lib/
-```
-
 E, finalmente, remova o diretório llvm:
 
 ```
@@ -305,6 +299,6 @@ Configure a compilação:
 Compile e instale:
 
 ```
-make
+make LIBCC="$STAGE1/lib/linux/libclang_rt.builtins-x86_64.a"
 make DESTDIR=$STAGE1 install
 ```
