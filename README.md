@@ -184,7 +184,7 @@ done
 Configure a compilação:
 
 ```
-CC=/usr/bin/clang ./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
+CC=/usr/bin/clang AR=llvm-ar RANLIB=llvm-ranlib ./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
 ```
 
 Compile e instale:
