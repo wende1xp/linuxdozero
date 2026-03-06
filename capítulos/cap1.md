@@ -62,7 +62,7 @@ cp linuxdozero/sources/source_pkgs.list .
 Remova o repositório pois não será mais necessário:
 
 ```
-rm -rf bootstrap
+rm -rf linuxdozero
 ```
 
 Use o arquivo source_pkgs.list para baixar todos os pacotes necessários:
@@ -165,4 +165,5 @@ Finalmente, para garantir que o ambiente esteja totalmente preparado para a cons
 source ~/.bash_profile
 
 ```
+
 
