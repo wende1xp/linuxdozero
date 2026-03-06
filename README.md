@@ -215,8 +215,7 @@ cmake -G Ninja -B build \
 Compile e instale:
 
 ```
-ninja -C build builtins
-ninja -C build install
+ninja -C build install-builtins
 ```
 
 Faça um link simbólico para resolver problema de compatibilidade com o musl:
