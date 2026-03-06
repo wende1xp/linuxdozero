@@ -156,6 +156,44 @@ Finalmente, para garantir que o ambiente esteja totalmente preparado para a cons
 source ~/.bash_profile
 ```
 
+# • Cabeçalhos da API do Linux 6.19.5
+
+Certifique-se de que não existem arquivos obsoletos embutidos no pacote: 
+
+```
+make mrproper CC=clang
+```
+
+Compile os cabeçalhos e os instale na raiz do sistema que estamos construindo:
+
+```
+make headers_install HOSTCC=/usr/bin/clang ARCH=x86_64 INSTALL_HDR_PATH=$STAGE1/usr
+```
+
+# • Musl
+
+Aplique as correções de segurança usando esse loop que aplica todas elas automaticamente:
+
+```
+for patch in $PARDAL/sources/patches/musl/*.patch; do
+    echo "Aplicando $patch..."
+    patch -Np1 --quiet < "$patch" || exit 1
+done
+```
+
+Configure a compilação:
+
+```
+./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
+```
+
+Compile e instale:
+
+```
+make
+make DESTDIR=$STAGE1 install
+```
+
 # • Construção do compilador inicial
 
 Extraia o pacote e entre no diretório do pacote llvm:
