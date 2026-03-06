@@ -1,5 +1,3 @@
-# **Cap. 1 - Preparação**
-
 Como usuário root e exporte uma variável apontando pro caminho que será usado para construir o sistema, nesse caso a variável será chamade de PARDAL e o caminho será /mnt/working.
 
 ```
