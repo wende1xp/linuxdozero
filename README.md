@@ -32,14 +32,6 @@ mkdir -vp "$PARDAL/usr"/{bin,sbin,lib,share}
 mkdir -vp "$PARDAL/var"/{log,run,cache,tmp,lib}
 mkdir -pv $STAGE1/usr/{bin,sbin,lib,include,share}
 mkdir -pv $STAGE2/usr/{bin,sbin,lib,include,share}
-
-ln -sv usr/bin $STAGE2/bin
-ln -sv usr/sbin $STAGE2/sbin
-ln -sv usr/lib $STAGE2/lib
-
-ln -sv usr/bin $STAGE1/bin
-ln -sv usr/sbin $STAGE1/sbin
-ln -sv usr/lib $STAGE1/lib
 ```
 
 Ajuste permissões:
@@ -56,6 +48,14 @@ ln -sv usr/bin "$PARDAL/bin"
 ln -sv usr/sbin "$PARDAL/sbin"
 ln -sv usr/lib "$PARDAL/lib"
 ln -sv lib "$PARDAL/usr/lib64"
+
+ln -sv usr/bin $STAGE1/bin
+ln -sv usr/sbin $STAGE1/sbin
+ln -sv usr/lib $STAGE1/lib
+
+ln -sv usr/bin $STAGE2/bin
+ln -sv usr/sbin $STAGE2/sbin
+ln -sv usr/lib $STAGE2/lib
 ```
 
 Baixe esse repositório e copie os patches e a lista de pacotes:
