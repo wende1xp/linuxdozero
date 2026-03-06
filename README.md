@@ -156,6 +156,12 @@ Finalmente, para garantir que o ambiente esteja totalmente preparado para a cons
 source ~/.bash_profile
 ```
 
+# • Construção do compilador inicial
+
+```
+cd $PARDAL/sources/pkgs
+```
+
 # • Cabeçalhos da API do Linux 6.19.5
 
 Certifique-se de que não existem arquivos obsoletos embutidos no pacote: 
@@ -194,7 +200,7 @@ make
 make DESTDIR=$STAGE1 install
 ```
 
-# • Construção do compilador inicial
+# • Clang
 
 Extraia o pacote e entre no diretório do pacote llvm:
 
