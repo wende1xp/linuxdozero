@@ -1,7 +1,7 @@
-Como usuário root e exporte uma variável apontando pro caminho que será usado para construir o sistema, nesse caso a variável será chamade de PARDAL e o caminho será /mnt/working.
+Como usuário root e exporte uma variável apontando pro caminho que será usado para construir o sistema, nesse caso a variável será chamada de BUILDDIR e o caminho será /mnt/working.
 
 ```
-export PARDAL=/mnt/working 
+export BUILDDIR=/mnt/working 
 export STAGE1=/mnt/working/stage1
 export STAGE2=/mnt/working/stage2
 ```
@@ -17,11 +17,11 @@ passwd builder
 Crie o layout exigido de diretório emitindo os seguintes comandos:
 
 ```
-mkdir -vp "$PARDAL"/sources/{patches,files,pkgs}
-mkdir -vp "$PARDAL"/{stage1,stage2,boot,dev,proc,sys,run,tmp,home,mnt,etc,opt}
-mkdir -vp "$PARDAL"/etc/init.d
-mkdir -vp "$PARDAL/usr"/{bin,sbin,lib,share}
-mkdir -vp "$PARDAL/var"/{log,run,cache,tmp,lib}
+mkdir -vp "$BUILDDIR"/sources/{patches,files,pkgs}
+mkdir -vp "$BUILDDIR"/{stage1,stage2,boot,dev,proc,sys,run,tmp,home,mnt,etc,opt}
+mkdir -vp "$BUILDDIR"/etc/init.d
+mkdir -vp "$BUILDDIR/usr"/{bin,sbin,lib,share}
+mkdir -vp "$BUILDDIR/var"/{log,run,cache,tmp,lib}
 mkdir -pv $STAGE1/usr/{bin,sbin,lib,include,share}
 mkdir -pv $STAGE2/usr/{bin,sbin,lib,include,share}
 ```
@@ -29,17 +29,17 @@ mkdir -pv $STAGE2/usr/{bin,sbin,lib,include,share}
 Ajuste permissões:
 
 ```
-chmod 0755 "$PARDAL"
-chmod 1777 "$PARDAL/tmp" "$PARDAL/var/tmp"
+chmod 0755 "$BUILDDIR"
+chmod 1777 "$BUILDDIR/tmp" "$BUILDDIR/var/tmp"
 ```
 
 Faça links simbólicos:
 
 ```
-ln -sv usr/bin "$PARDAL/bin"
-ln -sv usr/sbin "$PARDAL/sbin"
-ln -sv usr/lib "$PARDAL/lib"
-ln -sv lib "$PARDAL/usr/lib64"
+ln -sv usr/bin "$BUILDDIR/bin"
+ln -sv usr/sbin "$BUILDDIR/sbin"
+ln -sv usr/lib "$BUILDDIR/lib"
+ln -sv lib "$BUILDDIR/usr/lib64"
 
 ln -sv usr/bin $STAGE1/bin
 ln -sv usr/sbin $STAGE1/sbin
@@ -53,7 +53,7 @@ ln -sv usr/lib $STAGE2/lib
 Baixe esse repositório e copie os patches e a lista de pacotes:
 
 ```
-cd $PARDAL/sources/files
+cd $BUILDDIR/sources/files
 git clone https://gitlab.com/pardal-linux/bootstrap.git
 cp -rv bootstrap/patches/* ../patches
 cp bootstrap/sources/source_pkgs.list .
@@ -68,13 +68,13 @@ rm -rf bootstrap
 Use o arquivo source_pkgs.list para baixar todos os pacotes necessários:
 
 ```
-wget --input-file=$PARDAL/sources/files/source_pkgs.list --continue --directory-prefix=$PARDAL/sources/pkgs
+wget --input-file=$BUILDDIR/sources/files/source_pkgs.list --continue --directory-prefix=$BUILDDIR/sources/pkgs
 ```
 
 Agora conceda ao usuário builder as permissões adequadas:
 
 ```
-chown -R builder:builder $PARDAL
+chown -R builder:builder $BUILDDIR
 ```
 
 Renomeie esse o arquvio bash.bashrc para evitar alguma chance de alguma instância não documentada afetar as compilações ##Mudar depois
@@ -101,17 +101,39 @@ cat > ~/.bashrc << "EOF"
 set +h
 umask 022
 
-PARDAL=/mnt/working
+BUILDDIR=/mnt/working
 
-STAGE1=$PARDAL/stage1
-STAGE2=$PARDAL/stage2
-
-SYSTARGET=x86_64-pardal-linux-musl
+STAGE1=$BUILDDIR/stage1
+STAGE2=$BUILDDIR/stage2
 
 LC_ALL=POSIX
 PATH=$STAGE1/bin:/usr/bin:/bin
 
-export PARDAL STAGE1 SYSTARGET LC_ALL PATH
+export BUILDDIR STAGE1 LC_ALL PATH
+EOF
+```
+
+Definiremos uma variável de ambiente contendo o identificador da plataforma alvo (target triple). Esse identificador segue um formato padronizado que descreve arquitetura, fornecedor, sistema operacional e biblioteca C utilizada. Observe o exemplo de formato a seguir:
+
+  `x86_64-pc-linux-musl`
+
+*x86_64* → arquitetura da CPU
+
+*pc* → identificador do fornecedor ou da distribuição
+
+*linux* → sistema operacional alvo
+
+*musl* → implementação da biblioteca padrão C utilizada
+
+Você pode trocar o identificador do fornecedor pelo seu próprio, como no exemplo a seguir:
+
+  `x86_64-pardal-linux-musl`
+
+Se desejar trocar o identificador, mude o 'pc' pelo seu identificador no comando a seguir:
+
+```
+cat >> ~/.bashrc << "EOF"
+export SYSTARGET=x86_64-pc-linux-musl
 EOF
 ```
 
@@ -141,4 +163,5 @@ Finalmente, para garantir que o ambiente esteja totalmente preparado para a cons
 
 ```
 source ~/.bash_profile
+
 ```
