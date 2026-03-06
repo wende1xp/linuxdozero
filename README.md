@@ -234,8 +234,8 @@ Esse compilador é construído apontado para o host, sendo necessário para cons
 Antes de começarmos a compilar qualquer pacote, defina as variáveis com esses comandos:
 
 ```
-export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$WORKDIR -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
-export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$WORKDIR -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
 export AR="$STAGE1/bin/llvm-ar"
 export RANLIB="$STAGE1/bin/llvm-ranlib"
 export LD="$STAGE1/bin/ld.lld"
@@ -248,8 +248,8 @@ Ou, se preferir pode deixar as variáveis salvas no arquivo de confiração de u
 cat >> ~/.bashrc << 'EOF'
 
 
-export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$WORKDIR -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
-export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$WORKDIR -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
 export AR="$STAGE1/bin/llvm-ar"
 export RANLIB="$STAGE1/bin/llvm-ranlib"
 export LD="$STAGE1/bin/ld.lld"
@@ -301,4 +301,61 @@ Compile e instale:
 ```
 make LIBCC="$STAGE1/lib/linux/libclang_rt.builtins-x86_64.a"
 make DESTDIR=$STAGE1 install
+```
+
+Faça um link simbólico para evitar problemas na compilação:
+
+```
+mkdir -p $STAGE1/lib/clang/21/lib/x86_64-pardal-linux-musl
+ln -sv $STAGE1/lib/linux/libclang_rt.builtins-x86_64.a $STAGE1/lib/clang/21/lib/x86_64-pardal-linux-musl/libclang_rt.builtins.a
+```
+
+Não apague o diretório do musl pois vamos usar ele na próxima fase
+
+# **Fase 3 - Compilando as ferramentas do stage2**
+
+Crie a árvore de diretórios para stage2:
+
+```
+mkdir -pv $STAGE2/usr/{bin,sbin,lib,include,share}
+
+ln -sv usr/bin $STAGE2/bin
+ln -sv usr/sbin $STAGE2/sbin
+ln -sv usr/lib $STAGE2/lib
+```
+
+# • Musl
+
+Remova resquícios da antiga compilação:
+
+```
+make clean
+```
+
+Configure a compilação:
+
+```
+./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
+```
+
+Compile e instale:
+
+```
+make LIBCC="$STAGE1/lib/linux/libclang_rt.builtins-x86_64.a"
+make DESTDIR=$STAGE2 install
+```
+
+# • zlib-ng-compat
+
+Configure a compilação:
+
+```
+./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
+```
+
+Compile e instale:
+
+```
+make LIBCC="$STAGE1/lib/linux/libclang_rt.builtins-x86_64.a"
+make DESTDIR=$STAGE2 install
 ```
