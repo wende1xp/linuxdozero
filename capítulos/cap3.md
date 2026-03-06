@@ -50,33 +50,37 @@ make headers_install HOSTCC=/usr/bin/clang ARCH=x86_64 INSTALL_HDR_PATH=$STAGE1/
 
 # • Musl
 
-Aplique as correções de segurança usando esse loop que aplica todas elas automaticamente:
+Remova resquícios da antiga compilação:
 
 ```
-for patch in $PARDAL/sources/patches/musl/*.patch; do
-    echo "Aplicando $patch..."
-    patch -Np1 --quiet < "$patch" || exit 1
-done
+make clean
 ```
 
 Configure a compilação:
 
 ```
-./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET
+./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
 ```
 
 Compile e instale:
 
 ```
 make LIBCC="$STAGE1/lib/linux/libclang_rt.builtins-x86_64.a"
-make DESTDIR=$STAGE1 install
+make DESTDIR=$STAGE2 install
 ```
 
-Faça um link simbólico para evitar problemas na compilação:
+# • zlib-ng-compat
+
+Configure a compilação:
 
 ```
-mkdir -p $STAGE1/lib/clang/21/lib/x86_64-pardal-linux-musl
-ln -sv $STAGE1/lib/linux/libclang_rt.builtins-x86_64.a $STAGE1/lib/clang/21/lib/x86_64-pardal-linux-musl/libclang_rt.builtins.a
+./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
 ```
 
-Não apague o diretório do musl pois vamos usar ele na próxima fase
+Compile e instale:
+
+```
+make LIBCC="$STAGE1/lib/linux/libclang_rt.builtins-x86_64.a"
+make DESTDIR=$STAGE2 install
+```
+
