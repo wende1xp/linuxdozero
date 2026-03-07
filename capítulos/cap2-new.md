@@ -1,3 +1,12 @@
+Nota de desenvolvedor
+Fluxo vai mudar para:
+- 1  Linux headers
+- 2  clang minimal
+- 3  compiler-rt builtins
+- 4  musl
+- 5  clang completo + runtimes
+
+
 Este capítulo mostra como construir um compilador cruzado e as ferramentas associadas usando o ambiente do sistema host. Os programas compilados neste capítulo serão instalados sob o diretório $LFS/tools para mantê-los separados dos arquivos instalados nos capítulos seguintes.
 
 Entre no diretório que contém os pacotes:
@@ -20,33 +29,20 @@ Compile os cabeçalhos e os instale na raiz do sistema que estamos construindo:
 make headers_install HOSTCC=/usr/bin/clang ARCH=x86_64 INSTALL_HDR_PATH=$STAGE1/usr
 ```
 
-# • Musl
+# • Clang (Fase 1)
 
-Aplique as correções de segurança usando esse loop que aplica todas elas automaticamente:
+Esse vai ser o nosso compilador inicial, necessário para construir as dependências do compilador da fase 2.
+
+# Precisa de revisão
+
+Aplique as correções necessárias usando esse loop que aplica todas elas automaticamente:
 
 ```
-for patch in $BUILDDIR/sources/patches/musl/*.patch; do
+for patch in $BUILDDIR/sources/patches/llvm/*.patch; do
     echo "Aplicando $patch..."
     patch -Np1 --quiet < "$patch" || exit 1
 done
 ```
-
-Configure a compilação:
-
-```
-CC=/usr/bin/clang AR=llvm-ar RANLIB=llvm-ranlib ./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
-```
-
-Compile e instale:
-
-```
-make
-make DESTDIR=$STAGE1 install
-```
-
-# • LLVM (fase 1)
-
-Esse vai ser o nosso compilador inicial, necessário para construir as dependências do compilador da fase 2.
 
 Configure a compilação:
 
@@ -73,19 +69,9 @@ ninja -C build
 ninja -C build install
 ```
 
-Após isso remova o diretório de compilação para liberar armazenamento:
+# • compiler-rt (bultins + crts)
 
-```
-rm -rf build
-```
-
-Para posteriormente compilarmos a nossa biblioteca C inicial (LLVM) precisamos de bibliotecas de tempo de execução (compiler-rt). O nosso compilador possui um que podemos compilar com os seguintes comandos:
-
-Primeiro entre na pasta do compiler-rt:
-
-```
-cd $BUILDDIR/sources/pkgs/llvm-project-21.1.8.src/compiler-rt
-```
+Use a mesma árvore de diretórios do clang.
 
 Configure a compilação:
 
@@ -97,55 +83,30 @@ cmake -G Ninja -B build \
  -DCMAKE_AR=$STAGE1/bin/llvm-ar \
  -DCMAKE_RANLIB=$STAGE1/bin/llvm-ranlib \
  -DCOMPILER_RT_BUILD_BUILTINS=ON \
+ -DCOMPILER_RT_BUILD_CRT=ON \
  -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
  -DCOMPILER_RT_BUILD_XRAY=OFF \
  -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
  -DCOMPILER_RT_BUILD_PROFILE=OFF \
- -DCOMPILER_RT_BUILD_CRT=ON \
  -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
  -DCMAKE_C_COMPILER_TARGET=$SYSTARGET \
  -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
 ```
 
-Compile e instale os builtins:
+Compile e instale:
 
 ```
 ninja -C build install-builtins
+ninja -C build install-crt
 ```
 
-Remova o diretório de compilação:
+Após isso remova o diretório de compilação para liberar armazenamento:
 
 ```
 rm -rf build
 ```
 
-Configure a compilação novamente:
-
-```
-cmake -G Ninja -B build \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=$STAGE1 \
- -DCMAKE_C_COMPILER=$STAGE1/bin/clang \
- -DCMAKE_AR=$STAGE1/bin/llvm-ar \
- -DCMAKE_RANLIB=$STAGE1/bin/llvm-ranlib \
- -DCOMPILER_RT_BUILD_BUILTINS=ON \
- -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
- -DCOMPILER_RT_BUILD_XRAY=OFF \
- -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
- -DCOMPILER_RT_BUILD_PROFILE=OFF \
- -DCOMPILER_RT_BUILD_CRT=ON \
- -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
- -DCMAKE_C_COMPILER_TARGET=$SYSTARGET \
- -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
-```
-
-Compile e instale os crts:
-
-```
-ninja -C build install-crt
-```
-
-Faça links simbólicos para corrigir futuros problemas de compatibilidade:
+Faça links simbólicos para corrigir futuros problemas de compatibilidade ao compilar o musl:
 
 ```
 mkdir -p $STAGE1/usr/lib/clang/21/lib/x86_64-alpes-linux-musl
@@ -155,9 +116,63 @@ ln -sv $STAGE1/usr/lib/linux/clang_rt.crtbegin-x86_64.o $STAGE1/usr/lib/clang/21
 ln -sv $STAGE1/usr/lib/linux/clang_rt.crtend-x86_64.o $STAGE1/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/clang_rt.crtend.o
 ```
 
-Esse compilador é construído apontado para o host, sendo necessário para construir as dependências necessárias para construir um compilador isolado do host.
+# • Musl
 
+Aplique as correções de segurança usando esse loop que aplica todas elas automaticamente:
 
+```
+for patch in $BUILDDIR/sources/patches/musl/*.patch; do
+    echo "Aplicando $patch..."
+    patch -Np1 --quiet < "$patch" || exit 1
+done
+```
+
+Configure a compilação:
+
+```
+CC=/usr/bin/clang AR=llvm-ar RANLIB=llvm-ranlib ./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
+```
+
+Compile e instale:
+
+```
+make
+make DESTDIR=$STAGE1 install
+```
+
+# • Clang (Fase 2)
+
+Esse vai ser o nosso compilador final para o $STAGE1, esse será o compilador usado para compilar os próximos programas em $STAGE2.
+
+# Precisa de revisão
+# Modelo copiado da fase 1 apenas de placeholder
+
+Aplique as correções necessárias usando esse loop que aplica todas elas automaticamente:
+
+```
+for patch in $BUILDDIR/sources/patches/llvm/*.patch; do
+    echo "Aplicando $patch..."
+    patch -Np1 --quiet < "$patch" || exit 1
+done
+```
+
+Configure a compilação:
+
+```
+cmake -G Ninja -S llvm -B build \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_INSTALL_PREFIX=$STAGE1 \
+  -DLLVM_ENABLE_PROJECTS="clang;lld" \
+  -DLLVM_TARGETS_TO_BUILD="X86" \
+  -DLLVM_ENABLE_RUNTIMES="" \
+  -DLLVM_INCLUDE_TESTS=OFF \
+  -DLLVM_INCLUDE_EXAMPLES=OFF \
+  -DLLVM_ENABLE_BINDINGS=OFF \
+  -DLLVM_ENABLE_OCAMLDOC=OFF \
+  -DLLVM_BUILD_TOOLS=ON \
+  -DLLVM_BUILD_UTILS=ON \
+  -DLLVM_DEFAULT_TARGET_TRIPLE=$SYSTARGET
+```
 
 Capítulo Anterior:
 [Capítulo 1 - Preparação](cap1.md)
