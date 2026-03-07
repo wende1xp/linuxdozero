@@ -86,3 +86,8 @@ make PREFIX=/usr LIBDIR=/usr/lib
 make PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE2 install
 ```
 
+Capítulo Anterior:
+[Capítulo 2 - Ferramentas de Compilação (Fase 1)](cap2.md)
+
+Próximo Capítulo:
+[Capítulo 4 - Ferramentas de Compilação (Fase 3)](cap4.md)
