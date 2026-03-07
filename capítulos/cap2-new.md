@@ -192,7 +192,7 @@ cd libunwind
 cmake -G Ninja -B build \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMAKE_SYSROOT="$STAGE2" \
+ -DCMAKE_SYSROOT="$STAGE1" \
  -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
  -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
  -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
