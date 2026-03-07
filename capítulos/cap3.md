@@ -8,7 +8,7 @@ export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=com
 export AR="$STAGE1/bin/llvm-ar"
 export RANLIB="$STAGE1/bin/llvm-ranlib"
 export LD="$STAGE1/bin/ld.lld"
-export CFLAGS="-Wno-unused-command-line-argument"
+export CFLAGS="-fPIC -Wno-unused-command-line-argument"
 ```
 
 # • Cabeçalhos da API do Linux 6.19.5
@@ -57,7 +57,7 @@ export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE2 -rtlib=com
 export AR="$STAGE1/bin/llvm-ar"
 export RANLIB="$STAGE1/bin/llvm-ranlib"
 export LD="$STAGE1/bin/ld.lld"
-export CFLAGS="-Wno-unused-command-line-argument"
+export CFLAGS="-fPIC -Wno-unused-command-line-argument"
 ```
 
 # • zlib-ng-compat (2.3.3.tar.gz)
