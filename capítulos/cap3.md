@@ -96,17 +96,17 @@ cd libunwind
 cmake -G Ninja -B build \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMAKE_SYSROOT="$STAGE2" \
  -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
  -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
  -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_AR="$STAGE1/bin/llvm-ar" \
- -DCMAKE_NM="$STAGE1/bin/llvm-nm" \
- -DCMAKE_RANLIB="$STAGE1/bin/llvm-ranlib" \
- -DCMAKE_C_FLAGS="-fPIC -Wno-unused-command-line-argument" \
+ -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -Wno-unused-command-line-argument" \
+ -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -nostdlib++ -Wno-unused-command-line-argument" \
  -DLIBUNWIND_INSTALL_HEADERS=ON \
  -DLIBUNWIND_ENABLE_STATIC=OFF \
- -DLIBUNWIND_HIDE_SYMBOLS=ON
+ -DLIBUNWIND_USE_COMPILER_RT=ON \
+ -DLIBUNWIND_HIDE_SYMBOLS=ON \
+ -DLIBUNWIND_ENABLE_SHARED=ON
 ```
 
 Compile e instale:
