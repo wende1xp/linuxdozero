@@ -2,3 +2,4 @@ https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.19.5.tar.xz
 https://musl.libc.org/releases/musl-1.2.5.tar.gz
 https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.8/llvm-project-21.1.8.src.tar.xz
 https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.3.3.tar.gz
+https://github.com/chimera-linux/libatomic-chimera/archive/refs/tags/v0.90.0.tar.gz
