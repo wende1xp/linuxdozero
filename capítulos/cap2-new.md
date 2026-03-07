@@ -141,6 +141,68 @@ make
 make DESTDIR=$STAGE1 install
 ```
 
+# • zlib-ng-compat (2.3.3.tar.gz)
+
+Configure a compilação:
+
+```
+./configure --prefix=/usr --libdir=/lib --zlib-compat --shared
+```
+
+# • libatomic-chimera (v0.90.0.tar.gz)
+
+Compile e instale:
+
+```
+make PREFIX=/usr LIBDIR=/usr/lib
+make PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE2 install
+```
+
+Compile e instale:
+
+```
+make
+make DESTDIR=$STAGE1 install
+```
+
+# • libunwind
+
+Utilize a árvore de diretórios que não removemos ao compilar compiler-rt.
+
+Configure a compilação:
+
+```
+cd libunwind
+
+cmake -G Ninja -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_SYSROOT="$STAGE2" \
+ -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
+ -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
+ -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument" \
+ -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument" \
+ -DLIBUNWIND_INSTALL_HEADERS=ON \
+ -DLIBUNWIND_ENABLE_STATIC=OFF \
+ -DLIBUNWIND_ENABLE_SHARED=ON \
+ -DLIBUNWIND_USE_COMPILER_RT=ON \
+ -DLIBUNWIND_HIDE_SYMBOLS=ON \
+ -DLIBUNWIND_ENABLE_THREADS=ON \
+ -DLIBUNWIND_ENABLE_CROSS_UNWINDING=ON \
+ -DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
+ -DLIBUNWIND_ENABLE_CXX_EXCEPTIONS=OFF \
+ -DLIBUNWIND_ENABLE_SHARED=ON
+```
+
+Compile e instale:
+
+```
+ninja -C build
+DESTDIR=$STAGE2 ninja -C build install
+```
+
 # • Clang (Fase 2)
 
 Esse vai ser o nosso compilador final para o $STAGE1, esse será o compilador usado para compilar os próximos programas em $STAGE2.
