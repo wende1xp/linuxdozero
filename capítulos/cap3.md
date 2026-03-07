@@ -49,6 +49,17 @@ make
 make DESTDIR=$STAGE2 install
 ```
 
+Agora que temos uma libc podemos compilar apontando a raíz para $STAGE2.
+
+```
+export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE2 -rtlib=compiler-rt -fuse-ld=lld"
+export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE2 -rtlib=compiler-rt -fuse-ld=lld"
+export AR="$STAGE1/bin/llvm-ar"
+export RANLIB="$STAGE1/bin/llvm-ranlib"
+export LD="$STAGE1/bin/ld.lld"
+export CFLAGS="-Wno-unused-command-line-argument"
+```
+
 # • zlib-ng-compat (2.3.3.tar.gz)
 
 Configure a compilação:
