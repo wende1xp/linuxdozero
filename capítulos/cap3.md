@@ -103,12 +103,48 @@ for patch in $BUILDDIR/sources/patches/llvm/*.patch; do
 done
 ```
 
+# • libunwind
+
+Configure a compilação:
+
+```
+cd libunwind
+
+cmake -G Ninja -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_SYSROOT="$STAGE2" \
+ -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
+ -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
+ -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument" \
+ -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument" \
+ -DLIBUNWIND_INSTALL_HEADERS=ON \
+ -DLIBUNWIND_ENABLE_STATIC=ON \
+ -DLIBUNWIND_ENABLE_SHARED=ON \
+ -DLIBUNWIND_USE_COMPILER_RT=ON \
+ -DLIBUNWIND_HIDE_SYMBOLS=ON \
+ -DLIBUNWIND_ENABLE_THREADS=ON \
+ -DLIBUNWIND_ENABLE_CROSS_UNWINDING=ON \
+ -DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
+ -DLIBUNWIND_ENABLE_CXX_EXCEPTIONS=OFF \
+ -DLIBUNWIND_ENABLE_SHARED=ON
+```
+
+Compile e instale:
+
+```
+ninja -C build
+DESTDIR=$STAGE2 ninja -C build install
+```
+
 # • compiler-rt
 
 Configure a compilação:
 
 ```
-cd compiler-rt
+cd ../compiler-rt
 
 cmake -G Ninja -B build \
  -DCMAKE_BUILD_TYPE=Release \
@@ -131,7 +167,7 @@ cmake -G Ninja -B build \
 Compile e instale:
 
 ```
-ninja -C build install-builtins
+DESTDIR=$STAGE2 ninja -C build install-builtins
 ```
 
 Apague o diretório de build para uma nova compilação:
@@ -164,7 +200,7 @@ cmake -G Ninja -B build \
 Compile e instale:
 
 ```
-ninja -C build install-crt
+DESTDIR=$STAGE2 ninja -C build install-crt
 ```
 
 Faça links simbólicos para corrigir problemas de compatibilidade:
@@ -177,31 +213,31 @@ ln -sv $STAGE2/usr/lib/linux/clang_rt.crtbegin-x86_64.o $STAGE2/usr/lib/clang/21
 ln -sv $STAGE2/usr/lib/linux/clang_rt.crtend-x86_64.o $STAGE2/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/clang_rt.crtend.o
 ```
 
-# • libunwind
+# • libc++abi (llvm-project-21.1.8.src.tar.xz)
 
 Configure a compilação:
 
 ```
-cd ../libunwind
+cd ../libcxxabi
 
 cmake -G Ninja -B build \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_SYSROOT="$STAGE2" \
  -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
  -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
  -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
  -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument" \
- -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument" \
- -DCMAKE_SYSROOT="$STAGE2" \
- -DLIBUNWIND_INSTALL_HEADERS=ON \
- -DLIBUNWIND_ENABLE_STATIC=OFF \
- -DLIBUNWIND_USE_COMPILER_RT=ON \
- -DLIBUNWIND_HIDE_SYMBOLS=ON \
- -DLIBUNWIND_ENABLE_THREADS=ON \
- -DLIBUNWIND_ENABLE_CROSS_UNWINDING=ON \
- -DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
- -DLIBUNWIND_ENABLE_SHARED=ON
+ -DCMAKE_ASM_COMPILER_TARGET=$SYSTARGET \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -Wno-unused-command-line-argument" \
+ -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -nostdlib++ -Wno-unused-command-line-argument" \
+ -DLLVM_ENABLE_RUNTIMES="libunwind" \
+ -DLIBCXXABI_ENABLE_STATIC_UNWINDER=OFF \
+ -DLIBCXXABI_USE_COMPILER_RT=ON \
+ -DLIBCXXABI_ENABLE_SHARED=ON \
+ -DLIBCXXABI_ENABLE_STATIC=OFF \
+ -DLIBCXXABI_INCLUDE_TESTS=OFF 
+ -DLIBCXXABI_LIBCXX_INCLUDES="$BUILDDIR/sources/pkgs/llvm-project-21.1.8.src/libcxx/include"
 ```
 
 Compile e instale:
@@ -211,7 +247,24 @@ ninja -C build
 DESTDIR=$STAGE2 ninja -C build install
 ```
 
-Não apague a árvore de diretórios atual pois ainda usaremos na compilação dos próximos programas.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # • libc++ (llvm-project-21.1.8.src.tar.xz)
 
@@ -291,44 +344,7 @@ ninja -C build
 DESTDIR=$STAGE2 ninja -C build install
 ```
 
-# • libc++abi (llvm-project-21.1.8.src.tar.xz)
 
-Assumindo que você ainda esteja no diretório anterior (libunwind), basta entrar no diretório com esse comando:
-
-```
-cd ../libcxxabi
-```
-
-Configure a compilação:
-
-```
-cmake -G Ninja -B build \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
- -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
- -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -Wno-unused-command-line-argument" \
- -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -nostdlib++ -Wno-unused-command-line-argument" \
- -DLLVM_ENABLE_RUNTIMES="libunwind" \
- -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
- -DLIBUNWIND_INCLUDE_DIR=$STAGE2/usr/include \
- -DLIBUNWIND_LIBRARY=$STAGE2/usr/lib/libunwind.so \
- -DLIBCXXABI_ENABLE_STATIC_UNWINDER=OFF \
- -DLIBCXXABI_USE_COMPILER_RT=ON \
- -DLIBCXXABI_ENABLE_SHARED=ON \
- -DLIBCXXABI_ENABLE_STATIC=OFF \
- -DLIBCXXABI_LIBCXX_INCLUDES="$BUILDDIR/sources/pkgs/llvm-project-21.1.8.src/libcxx/include" \
- -DLIBCXXABI_INCLUDE_TESTS=OFF
-```
-
-Compile e instale:
-
-```
-ninja -C build
-DESTDIR=$STAGE2 ninja -C build install
-```
 
 Capítulo Anterior:
 [Capítulo 2 - Ferramentas de Compilação (Fase 1)](cap2.md)
