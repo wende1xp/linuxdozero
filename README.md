@@ -1,9 +1,11 @@
 # TODO
+- Finalizar o guia
 - Melhorar gramática
 - Adicionar mais definições
 - Melhorar tipografia
 - Adicionar esquemas explicativos
 - Embelezar esse readme
+- Otimizar o guia
 
 # Capítulos
 
@@ -32,5 +34,6 @@
 # FAQ
 - Blá blá blá
   - ok.
+
 
 
