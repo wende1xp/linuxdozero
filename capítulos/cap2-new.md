@@ -28,11 +28,9 @@ Compile os cabeçalhos e os instale na raiz do sistema que estamos construindo:
 make headers_install HOSTCC=/usr/bin/clang ARCH=x86_64 INSTALL_HDR_PATH=$STAGE1/usr
 ```
 
-# • Clang (Fase 1)
+# • Clang (Fase 1) Precisa de revisão
 
 Esse vai ser o nosso compilador inicial, necessário para construir as dependências do compilador da fase 2.
-
-# Precisa de revisão
 
 Aplique as correções necessárias usando esse loop que aplica todas elas automaticamente:
 
@@ -139,12 +137,9 @@ make
 make DESTDIR=$STAGE1 install
 ```
 
-# • Clang (Fase 2)
+# • Clang (Fase 2) precisa de revisão; modelo copiado da fase 1 apenas de placeholder
 
 Esse vai ser o nosso compilador final para o $STAGE1, esse será o compilador usado para compilar os próximos programas em $STAGE2.
-
-# Precisa de revisão
-# Modelo copiado da fase 1 apenas de placeholder
 
 Aplique as correções necessárias usando esse loop que aplica todas elas automaticamente:
 
