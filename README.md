@@ -3,6 +3,7 @@
 - Adicionar mais definições
 - Melhorar tipografia
 - Adicionar esquemas explicativos
+- Embelezar esse readme
 
 # Capítulos
 
@@ -31,4 +32,5 @@
 # FAQ
 - Blá blá blá
   - ok.
+
 
