@@ -92,9 +92,9 @@ make PREFIX=/usr LIBDIR=/usr/lib
 make PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE2 install
 ```
 
-# • compiler-rt (llvm-project-21.1.8.src.tar.xz)
+# llvm-project-21.1.8.src.tar.xz
 
-Aplique as correções necessárias usando esse loop que aplica todas elas automaticamente:
+A partir daqui os pacotes usarão a mesma árvore de diretórios. Antes de iniciar, aplique as correções necessárias usando esse loop que aplica todas elas automaticamente:
 
 ```
 for patch in $BUILDDIR/sources/patches/llvm/*.patch; do
@@ -102,6 +102,8 @@ for patch in $BUILDDIR/sources/patches/llvm/*.patch; do
     patch -Np1 --quiet < "$patch" || exit 1
 done
 ```
+
+# • compiler-rt
 
 Configure a compilação:
 
@@ -110,34 +112,60 @@ cd compiler-rt
 
 cmake -G Ninja -B build \
  -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_INSTALL_PREFIX="$STAGE2" \
  -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
- -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
  -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_ASM_COMPILER_TARGET=$SYSTARGET \
  -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument" \
- -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument" \
- -DCMAKE_SYSROOT="$STAGE2" \
- -DLIBUNWIND_INSTALL_HEADERS=ON \
- -DLIBUNWIND_ENABLE_STATIC=OFF \
- -DLIBUNWIND_USE_COMPILER_RT=ON \
- -DLIBUNWIND_HIDE_SYMBOLS=ON \
- -DLIBUNWIND_ENABLE_THREADS=ON \
- -DLIBUNWIND_ENABLE_CROSS_UNWINDING=ON \
- -DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
- -DLIBUNWIND_ENABLE_SHARED=ON
+ -DCOMPILER_RT_BUILD_BUILTINS=ON \
+ -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
+ -DCOMPILER_RT_BUILD_XRAY=OFF \
+ -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+ -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
+ -DCOMPILER_RT_BUILD_PROFILE=OFF \
+ -DCOMPILER_RT_BUILD_CXX=OFF \
+ -DCMAKE_CXX_COMPILER_WORKS=ON
 ```
 
-# • libunwind (llvm-project-21.1.8.src.tar.xz)
-
-Aplique as correções necessárias usando esse loop que aplica todas elas automaticamente:
+Compile e instale:
 
 ```
-for patch in $BUILDDIR/sources/patches/llvm/*.patch; do
-    echo "Aplicando $patch..."
-    patch -Np1 --quiet < "$patch" || exit 1
-done
+ninja -C build install-builtins
 ```
+
+Apague o diretório de build para uma nova compilação:
+
+```
+rm -rf build
+```
+
+Configure a compilação:
+
+```
+cmake -G Ninja -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX="$STAGE2" \
+ -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
+ -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_ASM_COMPILER_TARGET=$SYSTARGET \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument" \
+ -DCOMPILER_RT_BUILD_CRT=ON \
+ -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
+ -DCOMPILER_RT_BUILD_XRAY=OFF \
+ -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+ -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
+ -DCOMPILER_RT_BUILD_PROFILE=OFF \
+ -DCOMPILER_RT_BUILD_CXX=OFF \
+ -DCMAKE_CXX_COMPILER_WORKS=ON
+```
+
+Compile e instale:
+
+```
+ninja -C build install-crt
+```
+
+# • libunwind
 
 Configure a compilação:
 
