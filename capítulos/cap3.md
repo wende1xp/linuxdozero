@@ -45,7 +45,7 @@ make mrproper CC=clang
 Compile os cabeçalhos e os instale na raiz do sistema que estamos construindo:
 
 ```
-make headers_install HOSTCC=/usr/bin/clang ARCH=x86_64 INSTALL_HDR_PATH=$STAGE1/usr
+make headers_install HOSTCC="$STAGE1/bin/clang --rtlib=compiler-rt -fuse-ld=lld" HOSTCFLAGS="--sysroot=$STAGE1" ARCH=x86_64 INSTALL_HDR_PATH=$STAGE2/usr
 ```
 
 # • Musl
