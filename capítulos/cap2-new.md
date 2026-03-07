@@ -75,7 +75,7 @@ Use a mesma árvore de diretórios do clang.
 Configure a compilação:
 
 ```
-cmake -G Ninja -B build \
+cmake -G Ninja -S compiler-rt -B build \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=$STAGE1 \
  -DCMAKE_C_COMPILER=$STAGE1/bin/clang \
