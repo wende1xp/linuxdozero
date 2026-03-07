@@ -200,6 +200,36 @@ ninja -C build
 DESTDIR=$STAGE1 ninja -C build install
 ```
 
+# • libc++abi
+
+Configure a compilação:
+
+```
+cmake -G Ninja -S libcxxabi -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_SYSROOT="$STAGE1" \
+ -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
+ -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
+ -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument -unwindlib=libunwind" \
+ -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument -unwindlib=libunwind" \
+ -DLIBCXXABI_ENABLE_STATIC=ON \
+ -DLIBCXXABI_ENABLE_SHARED=OFF \
+ -DLIBCXXABI_ENABLE_THREADS=ON \
+ -DLIBCXXABI_ENABLE_ASSERTIONS=OFF \
+ -DLIBCXXABI_USE_COMPILER_RT=ON \
+ -DLIBCXXABI_USE_LLVM_UNWINDER=OFF
+```
+
+Compile e instale:
+
+```
+ninja -C build
+DESTDIR=$STAGE1 ninja -C build install
+```
+
 # • Clang (Fase 2)
 
 Esse vai ser o nosso compilador final para o $STAGE1, esse será o compilador usado para compilar os próximos programas em $STAGE2.
