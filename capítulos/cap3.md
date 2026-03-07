@@ -9,6 +9,7 @@ export AR="$STAGE1/bin/llvm-ar"
 export RANLIB="$STAGE1/bin/llvm-ranlib"
 export LD="$STAGE1/bin/ld.lld"
 export CFLAGS="-fPIC -Wno-unused-command-line-argument"
+export CXXFLAGS="$CFLAGS"
 ```
 
 # • Cabeçalhos da API do Linux 6.19.5
@@ -58,6 +59,7 @@ export AR="$STAGE1/bin/llvm-ar"
 export RANLIB="$STAGE1/bin/llvm-ranlib"
 export LD="$STAGE1/bin/ld.lld"
 export CFLAGS="-fPIC -Wno-unused-command-line-argument"
+export CXXFLAGS="$CFLAGS"
 ```
 
 # • zlib-ng-compat (2.3.3.tar.gz)
