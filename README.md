@@ -21,3 +21,13 @@
 
 - Chimera Linux
   - https://chimera-linux.org
+
+# Motivos
+- Porque sim
+- CMLFS não funciona atualmente
+- Aprender mais sobre linux
+
+
+# FAQ
+- Blá blá blá
+  - ok.
