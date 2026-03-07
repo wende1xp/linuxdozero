@@ -197,7 +197,7 @@ Compile e instale:
 
 ```
 ninja -C build
-DESTDIR=$STAGE2 ninja -C build install
+DESTDIR=$STAGE1 ninja -C build install
 ```
 
 # • Clang (Fase 2)
