@@ -180,7 +180,7 @@ ln -sv $STAGE2/usr/lib/linux/clang_rt.crtend-x86_64.o $STAGE2/usr/lib/clang/21/l
 Configure a compilação:
 
 ```
-cd libunwind
+cd ../libunwind
 
 cmake -G Ninja -B build \
  -DCMAKE_BUILD_TYPE=Release \
