@@ -101,15 +101,48 @@ cmake -G Ninja -B build \
  -DCOMPILER_RT_BUILD_XRAY=OFF \
  -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
  -DCOMPILER_RT_BUILD_PROFILE=OFF \
+ -DCOMPILER_RT_BUILD_CRT=ON \
  -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
  -DCMAKE_C_COMPILER_TARGET=$SYSTARGET \
  -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
 ```
 
-Compile e instale:
+Compile e instale os builtins:
 
 ```
 ninja -C build install-builtins
+```
+
+Remova o diretório de compilação:
+
+```
+rm -rf build
+```
+
+Configure a compilação novamente:
+
+```
+cmake -G Ninja -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=$STAGE1 \
+ -DCMAKE_C_COMPILER=$STAGE1/bin/clang \
+ -DCMAKE_AR=$STAGE1/bin/llvm-ar \
+ -DCMAKE_RANLIB=$STAGE1/bin/llvm-ranlib \
+ -DCOMPILER_RT_BUILD_BUILTINS=ON \
+ -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
+ -DCOMPILER_RT_BUILD_XRAY=OFF \
+ -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+ -DCOMPILER_RT_BUILD_PROFILE=OFF \
+ -DCOMPILER_RT_BUILD_CRT=ON \
+ -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
+ -DCMAKE_C_COMPILER_TARGET=$SYSTARGET \
+ -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
+```
+
+Compile e instale os crts:
+
+```
+ninja -C build install-crt
 ```
 
 E, finalmente, remova o diretório llvm:
@@ -120,6 +153,7 @@ ln -sv $STAGE1/usr/lib/linux/libclang_rt.builtins-x86_64.a $STAGE1/usr/lib/clang
 ```
 
 Esse compilador é construído apontado para o host, sendo necessário para construir as dependências necessárias para construir um compilador isolado do host.
+
 
 
 
