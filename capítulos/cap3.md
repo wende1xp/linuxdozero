@@ -133,7 +133,43 @@ ninja -C build
 DESTDIR=$STAGE2 ninja -C build install
 ```
 
+Não apague a árvore de diretórios atual pois ainda usaremos na compilação dos próximos programas.
 
+# • libc++abi (llvm-project-21.1.8.src.tar.xz)
+
+Assumindo que você ainda esteja no diretório anterior (libunwind), basta entrar no diretório com esse comando:
+
+```
+cd ../libcxxabi
+```
+
+Configure a compilação:
+
+```
+cmake -G Ninja -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
+ -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
+ -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -Wno-unused-command-line-argument" \
+ -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -nostdlib++ -Wno-unused-command-line-argument" \
+ -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+ -DLIBCXXABI_ENABLE_STATIC_UNWINDER=OFF \
+ -DLIBCXXABI_USE_COMPILER_RT=ON \
+ -DLIBCXXABI_ENABLE_SHARED=ON \
+ -DLIBCXXABI_ENABLE_STATIC=OFF \
+ -DLIBCXXABI_LIBCXX_INCLUDES="$BUILDDIR/sources/pkgs/llvm-project-21.1.8.src/libcxx/include" \
+ -DLIBCXXABI_INCLUDE_TESTS=OFF
+```
+
+Compile e instale:
+
+```
+ninja -C build
+DESTDIR=$STAGE2 ninja -C build install
+```
 
 Capítulo Anterior:
 [Capítulo 2 - Ferramentas de Compilação (Fase 1)](cap2.md)
