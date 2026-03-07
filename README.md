@@ -12,3 +12,4 @@
 - [Capítulo 4 - Ferramentas de Compilação (Fase 3)](capítulos/cap4.md)
 
 
+
