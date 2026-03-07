@@ -86,6 +86,38 @@ make PREFIX=/usr LIBDIR=/usr/lib
 make PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE2 install
 ```
 
+# • libunwind (llvm-project-21.1.8.src.tar.xz)
+
+Configure a compilação:
+
+```
+cd libunwind
+
+cmake -G Ninja -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_SYSROOT="$STAGE2" \
+ -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
+ -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
+ -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_AR="$STAGE1/bin/llvm-ar" \
+ -DCMAKE_NM="$STAGE1/bin/llvm-nm" \
+ -DCMAKE_RANLIB="$STAGE1/bin/llvm-ranlib" \
+ -DCMAKE_C_FLAGS="-fPIC -Wno-unused-command-line-argument" \
+ -DLIBUNWIND_INSTALL_HEADERS=ON \
+ -DLIBUNWIND_ENABLE_STATIC=OFF \
+ -DLIBUNWIND_HIDE_SYMBOLS=ON
+```
+
+Compile e instale:
+
+```
+ninja -C build
+DESTDIR=$STAGE2 ninja -C build install
+```
+
+
+
 Capítulo Anterior:
 [Capítulo 2 - Ferramentas de Compilação (Fase 1)](cap2.md)
 
