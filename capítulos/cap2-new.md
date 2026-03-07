@@ -115,6 +115,8 @@ ln -sv $STAGE1/usr/lib/linux/clang_rt.crtbegin-x86_64.o $STAGE1/usr/lib/clang/21
 ln -sv $STAGE1/usr/lib/linux/clang_rt.crtend-x86_64.o $STAGE1/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/clang_rt.crtend.o
 ```
 
+Não remova a árvore de diretórios que usamos pois ainda vamos usar ela para recompilar o clang (fase 2).
+
 # • Musl
 
 Aplique as correções de segurança usando esse loop que aplica todas elas automaticamente:
@@ -143,15 +145,6 @@ make DESTDIR=$STAGE1 install
 
 Esse vai ser o nosso compilador final para o $STAGE1, esse será o compilador usado para compilar os próximos programas em $STAGE2.
 
-Aplique as correções necessárias usando esse loop que aplica todas elas automaticamente:
-
-```
-for patch in $BUILDDIR/sources/patches/llvm/*.patch; do
-    echo "Aplicando $patch..."
-    patch -Np1 --quiet < "$patch" || exit 1
-done
-```
-
 Configure a compilação:
 
 ```
@@ -159,15 +152,24 @@ cmake -G Ninja -S llvm -B build \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_INSTALL_PREFIX=$STAGE1 \
   -DLLVM_ENABLE_PROJECTS="clang;lld" \
+  -DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
   -DLLVM_TARGETS_TO_BUILD="X86" \
-  -DLLVM_ENABLE_RUNTIMES="" \
-  -DLLVM_INCLUDE_TESTS=OFF \
-  -DLLVM_INCLUDE_EXAMPLES=OFF \
-  -DLLVM_ENABLE_BINDINGS=OFF \
-  -DLLVM_ENABLE_OCAMLDOC=OFF \
-  -DLLVM_BUILD_TOOLS=ON \
-  -DLLVM_BUILD_UTILS=ON \
-  -DLLVM_DEFAULT_TARGET_TRIPLE=$SYSTARGET
+  -DLLVM_DEFAULT_TARGET_TRIPLE=$SYSTARGET \
+  -DCLANG_DEFAULT_LINKER=lld \
+  -DCLANG_DEFAULT_RTLIB=compiler-rt \
+  -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
+  -DCLANG_DEFAULT_UNWINDLIB=libunwind \
+  -DLIBCXX_USE_COMPILER_RT=ON \
+  -DLIBCXXABI_USE_COMPILER_RT=ON \
+  -DLIBUNWIND_USE_COMPILER_RT=ON \
+  -DLLVM_INCLUDE_TESTS=OFF
+```
+
+Compile e instale:
+
+```
+ninja -C build
+ninja -C build install
 ```
 
 Capítulo Anterior:
