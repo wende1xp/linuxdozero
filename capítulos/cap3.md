@@ -87,3 +87,12 @@ make
 make DESTDIR=$STAGE2 install
 ```
 
+# • libatomic-chimera (v0.90.0.tar.gz)
+
+Compile e instale:
+
+```
+make PREFIX=$STAGE2
+make DESTDIR=$STAGE2 install
+```
+
