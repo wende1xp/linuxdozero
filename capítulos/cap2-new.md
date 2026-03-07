@@ -141,6 +141,21 @@ make
 make DESTDIR=$STAGE1 install
 ```
 
+Agora que temos o musl podemos definir as flags necessárias para compilar os próximos pacotes:
+
+```
+export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld"
+export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld"
+
+export AR="$STAGE1/bin/llvm-ar"
+export RANLIB="$STAGE1/bin/llvm-ranlib"
+export LD="$STAGE1/bin/ld.lld"
+export NM="$STAGE1/bin/llvm-nm"
+
+export CFLAGS="-fPIC -Wno-unused-command-line-argument"
+export CXXFLAGS="$CFLAGS"
+```
+
 # • zlib-ng-compat (2.3.3.tar.gz)
 
 Configure a compilação:
