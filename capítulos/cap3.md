@@ -88,6 +88,15 @@ make PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE2 install
 
 # • libunwind (llvm-project-21.1.8.src.tar.xz)
 
+Aplique as correções necessárias usando esse loop que aplica todas elas automaticamente:
+
+```
+for patch in $BUILDDIR/sources/patches/llvm/*.patch; do
+    echo "Aplicando $patch..."
+    patch -Np1 --quiet < "$patch" || exit 1
+done
+```
+
 Configure a compilação:
 
 ```
