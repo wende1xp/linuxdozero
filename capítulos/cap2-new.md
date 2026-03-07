@@ -172,9 +172,7 @@ Utilize a árvore de diretórios que não removemos ao compilar compiler-rt.
 Configure a compilação:
 
 ```
-cd libunwind
-
-cmake -G Ninja -B build \
+cmake -G Ninja -S libunwind -B build \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
  -DCMAKE_SYSROOT="$STAGE1" \
