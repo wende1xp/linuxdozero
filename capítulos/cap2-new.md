@@ -1,4 +1,3 @@
-Nota de desenvolvedor
 Fluxo vai mudar para:
 - 1  Linux headers
 - 2  clang minimal
