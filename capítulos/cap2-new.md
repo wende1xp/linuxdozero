@@ -180,18 +180,17 @@ cmake -G Ninja -S libunwind -B build \
  -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
  -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
  -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument" \
- -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument" \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=none -Wno-unused-command-line-argument" \
+ -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=none -nostdlib++ -Wno-unused-command-line-argument" \
  -DLIBUNWIND_INSTALL_HEADERS=ON \
- -DLIBUNWIND_ENABLE_STATIC=OFF \
+ -DLIBUNWIND_ENABLE_STATIC=ON \
  -DLIBUNWIND_ENABLE_SHARED=ON \
  -DLIBUNWIND_USE_COMPILER_RT=ON \
  -DLIBUNWIND_HIDE_SYMBOLS=ON \
  -DLIBUNWIND_ENABLE_THREADS=ON \
  -DLIBUNWIND_ENABLE_CROSS_UNWINDING=ON \
  -DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
- -DLIBUNWIND_ENABLE_CXX_EXCEPTIONS=OFF \
- -DLIBUNWIND_ENABLE_SHARED=ON
+ -DLIBUNWIND_ENABLE_CXX_EXCEPTIONS=OFF
 ```
 
 Compile e instale:
