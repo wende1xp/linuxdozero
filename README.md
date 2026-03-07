@@ -4,8 +4,10 @@
 - Melhorar tipografia
 - Adicionar esquemas explicativos
 
-- [Capítulo 0](capítulos/cap0.md)
+# Capítulos:
+
 - [Capítulo 1](capítulos/cap1.md)
 - [Capítulo 2](capítulos/cap2.md)
+- [Capítulo 3](capítulos/cap3.md)
 
 
