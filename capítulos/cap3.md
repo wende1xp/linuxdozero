@@ -17,8 +17,8 @@ Ou, se preferir pode deixar as variáveis salvas no arquivo de configuração do
 cat >> ~/.bashrc << 'EOF'
 
 
-export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
-export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -resource-dir=$STAGE1/lib/clang/21.1.8"
+export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld
+export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld
 export AR="$STAGE1/bin/llvm-ar"
 export RANLIB="$STAGE1/bin/llvm-ranlib"
 export LD="$STAGE1/bin/ld.lld"
