@@ -5,9 +5,12 @@ Antes de começarmos a compilar qualquer pacote, defina as variáveis com esses 
 ```
 export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld"
 export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld"
+
 export AR="$STAGE1/bin/llvm-ar"
 export RANLIB="$STAGE1/bin/llvm-ranlib"
 export LD="$STAGE1/bin/ld.lld"
+export NM="$STAGE1/bin/llvm-nm"
+
 export CFLAGS="-fPIC -Wno-unused-command-line-argument"
 export CXXFLAGS="$CFLAGS"
 ```
@@ -55,9 +58,12 @@ Agora que temos uma libc, então, agora podemos compilar apontando a raíz para 
 ```
 export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE2 -rtlib=compiler-rt -fuse-ld=lld"
 export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE2 -rtlib=compiler-rt -fuse-ld=lld"
+
 export AR="$STAGE1/bin/llvm-ar"
 export RANLIB="$STAGE1/bin/llvm-ranlib"
 export LD="$STAGE1/bin/ld.lld"
+export NM="$STAGE1/bin/llvm-nm"
+
 export CFLAGS="-fPIC -Wno-unused-command-line-argument"
 export CXXFLAGS="$CFLAGS"
 ```
