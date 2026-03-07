@@ -165,6 +165,16 @@ Compile e instale:
 ninja -C build install-crt
 ```
 
+Faça links simbólicos para corrigir problemas de compatibilidade:
+
+```
+mkdir -p $STAGE2/usr/lib/clang/21/lib/x86_64-alpes-linux-musl
+
+ln -sv $STAGE2/usr/lib/linux/libclang_rt.builtins-x86_64.a $STAGE2/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/libclang_rt.builtins.a
+ln -sv $STAGE2/usr/lib/linux/clang_rt.crtbegin-x86_64.o $STAGE2/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/clang_rt.crtbegin.o
+ln -sv $STAGE2/usr/lib/linux/clang_rt.crtend-x86_64.o $STAGE2/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/clang_rt.crtend.o
+```
+
 # • libunwind
 
 Configure a compilação:
