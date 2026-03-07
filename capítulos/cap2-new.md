@@ -184,7 +184,7 @@ cmake -G Ninja -S libunwind -B build \
  -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=none -nostdlib++ -Wno-unused-command-line-argument" \
  -DLIBUNWIND_INSTALL_HEADERS=ON \
  -DLIBUNWIND_ENABLE_STATIC=ON \
- -DLIBUNWIND_ENABLE_SHARED=ON \
+ -DLIBUNWIND_ENABLE_SHARED=OFF \
  -DLIBUNWIND_USE_COMPILER_RT=ON \
  -DLIBUNWIND_HIDE_SYMBOLS=ON \
  -DLIBUNWIND_ENABLE_THREADS=ON \
