@@ -127,7 +127,7 @@ done
 Configure a compilação:
 
 ```
-CC=/usr/bin/clang AR=llvm-ar RANLIB=llvm-ranlib ./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
+CC="$STAGE1/bin/clang --target=$SYSTARGET" AR="$STAGE1/bin/llvm-ar" RANLIB="$STAGE1/bin/llvm-ranlib" ./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
 ```
 
 Compile e instale:
