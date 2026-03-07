@@ -92,7 +92,7 @@ make DESTDIR=$STAGE2 install
 Compile e instale:
 
 ```
-make PREFIX=/usr
-make DESTDIR=$STAGE2 install
+make PREFIX=/usr LIBDIR=/usr/lib
+make PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE2 install
 ```
 
