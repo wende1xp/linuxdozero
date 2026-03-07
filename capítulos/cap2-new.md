@@ -161,8 +161,8 @@ export CXXFLAGS="$CFLAGS"
 Compile e instale:
 
 ```
-make PREFIX=/usr LIBDIR=/usr/lib
-make PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE1 install
+make CC="$STAGE1/bin/clang --target=x86_64-alpes-linux-musl --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld -nostdlib -nodefaultlibs" PREFIX=/usr LIBDIR=/usr/lib
+make CC="$STAGE1/bin/clang --target=x86_64-alpes-linux-musl --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld -nostdlib -nodefaultlibs" PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE1 install
 ```
 
 # • libunwind
