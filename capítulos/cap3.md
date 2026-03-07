@@ -121,7 +121,7 @@ cmake -G Ninja -B build \
  -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument" \
  -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument" \
  -DLIBUNWIND_INSTALL_HEADERS=ON \
- -DLIBUNWIND_ENABLE_STATIC=ON \
+ -DLIBUNWIND_ENABLE_STATIC=OFF \
  -DLIBUNWIND_ENABLE_SHARED=ON \
  -DLIBUNWIND_USE_COMPILER_RT=ON \
  -DLIBUNWIND_HIDE_SYMBOLS=ON \
@@ -211,6 +211,42 @@ mkdir -p $STAGE2/usr/lib/clang/21/lib/x86_64-alpes-linux-musl
 ln -sv $STAGE2/usr/lib/linux/libclang_rt.builtins-x86_64.a $STAGE2/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/libclang_rt.builtins.a
 ln -sv $STAGE2/usr/lib/linux/clang_rt.crtbegin-x86_64.o $STAGE2/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/clang_rt.crtbegin.o
 ln -sv $STAGE2/usr/lib/linux/clang_rt.crtend-x86_64.o $STAGE2/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/clang_rt.crtend.o
+```
+
+# • libunwind
+
+Configure a compilação:
+
+```
+cd libunwind
+
+cmake -G Ninja -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_SYSROOT="$STAGE2" \
+ -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
+ -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
+ -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument" \
+ -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument" \
+ -DLIBUNWIND_INSTALL_HEADERS=ON \
+ -DLIBUNWIND_ENABLE_STATIC=ON \
+ -DLIBUNWIND_ENABLE_SHARED=ON \
+ -DLIBUNWIND_USE_COMPILER_RT=ON \
+ -DLIBUNWIND_HIDE_SYMBOLS=ON \
+ -DLIBUNWIND_ENABLE_THREADS=ON \
+ -DLIBUNWIND_ENABLE_CROSS_UNWINDING=ON \
+ -DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
+ -DLIBUNWIND_ENABLE_CXX_EXCEPTIONS=OFF \
+ -DLIBUNWIND_ENABLE_SHARED=ON
+```
+
+Compile e instale:
+
+```
+ninja -C build
+DESTDIR=$STAGE2 ninja -C build install
 ```
 
 # • libc++abi (llvm-project-21.1.8.src.tar.xz)
