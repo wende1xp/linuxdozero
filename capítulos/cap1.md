@@ -167,5 +167,6 @@ source ~/.bash_profile
 ```
 
 Próximo Capítulo:
-- [Capítulo 2 - Ferramentas de Compilação (Fase 1)](capítulos/cap2.md)
+[Capítulo 2 - Ferramentas de Compilação (Fase 1)](capítulos/cap2.md)
+
 
