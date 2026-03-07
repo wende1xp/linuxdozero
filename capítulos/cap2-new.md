@@ -164,20 +164,20 @@ Configure a compilação:
 ./configure --prefix=/usr --libdir=/lib --zlib-compat --shared
 ```
 
+Compile e instale:
+
+```
+make
+make DESTDIR=$STAGE1 install
+```
+
 # • libatomic-chimera (v0.90.0.tar.gz)
 
 Compile e instale:
 
 ```
 make PREFIX=/usr LIBDIR=/usr/lib
-make PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE2 install
-```
-
-Compile e instale:
-
-```
-make
-make DESTDIR=$STAGE1 install
+make PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE1 install
 ```
 
 # • libunwind
