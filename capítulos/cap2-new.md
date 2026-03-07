@@ -161,7 +161,7 @@ export CXXFLAGS="$CFLAGS"
 Configure a compilação:
 
 ```
-./configure --prefix=/usr --libdir=/lib --zlib-compat --shared
+./configure --prefix=/usr --libdir=/lib --zlib-compat
 ```
 
 Compile e instale:
