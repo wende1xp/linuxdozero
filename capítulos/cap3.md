@@ -50,7 +50,7 @@ make
 make DESTDIR=$STAGE2 install
 ```
 
-Agora que temos uma libc podemos compilar apontando a raíz para $STAGE2.
+Agora que temos uma libc, então, agora podemos compilar apontando a raíz para $STAGE2.
 
 ```
 export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE2 -rtlib=compiler-rt -fuse-ld=lld"
