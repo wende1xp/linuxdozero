@@ -77,7 +77,7 @@ make DESTDIR=$STAGE2 install
 Configure a compilação:
 
 ```
-./configure --prefix=$STAGE2 --libdir=$STAGE2/lib --zlib-compat
+./configure --prefix=/usr --libdir=/lib --zlib-compat
 ```
 
 Compile e instale:
