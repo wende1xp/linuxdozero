@@ -156,21 +156,6 @@ export CFLAGS="-fPIC -Wno-unused-command-line-argument"
 export CXXFLAGS="$CFLAGS"
 ```
 
-# • zlib-ng-compat (2.3.3.tar.gz)
-
-Configure a compilação:
-
-```
-./configure --prefix=/usr --libdir=/lib --zlib-compat
-```
-
-Compile e instale:
-
-```
-make
-make DESTDIR=$STAGE1 install
-```
-
 # • libatomic-chimera (v0.90.0.tar.gz)
 
 Compile e instale:
