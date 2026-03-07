@@ -10,9 +10,9 @@
 # Capítulos
 
 - [Capítulo 1 - Preparação](capítulos/cap1.md)
-- [Capítulo 2 - Ferramentas de Compilação (Fase 1)](capítulos/cap2.md)
-- [Capítulo 3 - Ferramentas de Compilação (Fase 2)](capítulos/cap3.md)
-- [Capítulo 4 - Ferramentas de Compilação (Fase 3)](capítulos/cap4.md)
+- WIP[Capítulo 2 - Ferramentas de Compilação (Fase 1)](capítulos/cap2.md)
+- WIP[Capítulo 3 - Ferramentas de Compilação (Fase 2)](capítulos/cap3.md)
+- Placeholder[Capítulo 4 - Ferramentas de Compilação (Fase 3?)](capítulos/cap4.md)
 
 # Créditos 
 - Linux From Scratch
@@ -34,6 +34,7 @@
 # FAQ
 - Blá blá blá
   - ok.
+
 
 
 
