@@ -115,11 +115,12 @@ ninja -C build install-builtins
 E, finalmente, remova o diretório llvm:
 
 ```
-cd $BUILDDIR/sources/pkgs
-rm -rf llvm-project-21.1.8.src
+mkdir -p $STAGE1/usr/lib/clang/21/lib/x86_64-alpes-linux-musl
+ln -sv $STAGE1/usr/lib/linux/libclang_rt.builtins-x86_64.a $STAGE1/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/libclang_rt.builtins.a
 ```
 
 Esse compilador é construído apontado para o host, sendo necessário para construir as dependências necessárias para construir um compilador isolado do host.
+
 
 
 
