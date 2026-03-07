@@ -68,7 +68,7 @@ Configure a compilação:
 Compile e instale:
 
 ```
-make LIBCC="$STAGE1/lib/linux/libclang_rt.builtins-x86_64.a"
+make
 make DESTDIR=$STAGE2 install
 ```
 
