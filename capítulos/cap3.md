@@ -50,6 +50,15 @@ make headers_install HOSTCC="$STAGE1/bin/clang --rtlib=compiler-rt -fuse-ld=lld"
 
 # • Musl
 
+Aplique as correções de segurança usando esse loop que aplica todas elas automaticamente:
+
+```
+for patch in $BUILDDIR/sources/patches/musl/*.patch; do
+    echo "Aplicando $patch..."
+    patch -Np1 --quiet < "$patch" || exit 1
+done
+```
+
 Configure a compilação:
 
 ```
