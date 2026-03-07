@@ -72,7 +72,7 @@ make
 make DESTDIR=$STAGE2 install
 ```
 
-# • zlib-ng-compat
+# • zlib-ng-compat (2.3.3.tar.gz)
 
 Configure a compilação:
 
