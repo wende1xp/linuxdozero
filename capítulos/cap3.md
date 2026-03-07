@@ -155,7 +155,7 @@ cmake -G Ninja -B build \
  -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
  -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -Wno-unused-command-line-argument" \
  -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=libunwind -nostdlib++ -Wno-unused-command-line-argument" \
- -DLLVM_ENABLE_RUNTIMES="libunwind"
+ -DLLVM_ENABLE_RUNTIMES="libunwind" \
  -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
  -DLIBUNWIND_INCLUDE_DIR=$STAGE2/usr/include \
  -DLIBUNWIND_LIBRARY=$STAGE2/usr/lib/libunwind.so \
