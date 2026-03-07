@@ -77,13 +77,13 @@ make DESTDIR=$STAGE2 install
 Configure a compilação:
 
 ```
-./configure --prefix=/usr --syslibdir=/lib --target=$SYSTARGET --disable-gcc-wrapper
+./configure --prefix=$STAGE2 --libdir=$STAGE2/lib --zlib-compat
 ```
 
 Compile e instale:
 
 ```
-make LIBCC="$STAGE1/lib/linux/libclang_rt.builtins-x86_64.a"
+make
 make DESTDIR=$STAGE2 install
 ```
 
