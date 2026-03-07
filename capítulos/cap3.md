@@ -103,6 +103,34 @@ for patch in $BUILDDIR/sources/patches/llvm/*.patch; do
 done
 ```
 
+Parte chata a seguir:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # • libunwind
 
 Configure a compilação:
