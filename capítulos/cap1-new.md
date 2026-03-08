@@ -1,80 +1,9 @@
-Como usuário root e exporte uma variável apontando pro caminho que será usado para construir o sistema, nesse caso a variável será chamada de BUILDDIR e o caminho será /mnt/working.
-
-```
-export BUILDDIR=/mnt/working 
-export STAGE1=/mnt/working/stage1
-export STAGE2=/mnt/working/stage2
-```
-
-Agora adicione um usuário para evita contaminar o sistema host e garantir builds reproduzíveis:
+Como usuário root adicione um usuário para evita contaminar o sistema host e garantir builds reproduzíveis:
 
 ```
 groupadd builder
 useradd -s /bin/bash -g builder -m -k /dev/null builder
 passwd builder
-```
-
-Crie o layout exigido de diretório emitindo os seguintes comandos:
-
-```
-mkdir -vp "$BUILDDIR"/sources/{patches,files,pkgs}
-mkdir -vp "$BUILDDIR"/{stage1,stage2,boot,dev,proc,sys,run,tmp,home,mnt,etc,opt}
-mkdir -vp "$BUILDDIR"/etc/init.d
-mkdir -vp "$BUILDDIR/usr"/{bin,sbin,lib,share}
-mkdir -vp "$BUILDDIR/var"/{log,run,cache,tmp,lib}
-mkdir -pv $STAGE1/usr/{bin,sbin,lib,include,share}
-mkdir -pv $STAGE2/usr/{bin,sbin,lib,include,share}
-```
-
-Ajuste permissões:
-
-```
-chmod 0755 "$BUILDDIR"
-chmod 1777 "$BUILDDIR/tmp" "$BUILDDIR/var/tmp"
-```
-
-Faça links simbólicos:
-
-```
-ln -sv usr/bin "$BUILDDIR/bin"
-ln -sv usr/sbin "$BUILDDIR/sbin"
-ln -sv usr/lib "$BUILDDIR/lib"
-ln -sv lib "$BUILDDIR/usr/lib64"
-
-ln -sv usr/bin $STAGE1/bin
-ln -sv usr/sbin $STAGE1/sbin
-ln -sv usr/lib $STAGE1/lib
-
-ln -sv usr/bin $STAGE2/bin
-ln -sv usr/sbin $STAGE2/sbin
-ln -sv usr/lib $STAGE2/lib
-```
-
-Baixe esse repositório e copie os patches e a lista de pacotes:
-
-```
-cd $BUILDDIR/sources/files
-git clone https://github.com/wende1xp/linuxdozero.git
-cp -rv linuxdozero/patches/* ../patches
-cp linuxdozero/sources/source_pkgs.list .
-```
-
-Remova o repositório pois não será mais necessário:
-
-```
-rm -rf linuxdozero
-```
-
-Use o arquivo source_pkgs.list para baixar todos os pacotes necessários:
-
-```
-wget --input-file=$BUILDDIR/sources/files/source_pkgs.list --continue --directory-prefix=$BUILDDIR/sources/pkgs
-```
-
-Agora conceda ao usuário builder as permissões adequadas:
-
-```
-chown -R builder:builder $BUILDDIR
 ```
 
 Renomeie esse o arquvio bash.bashrc para evitar alguma chance de alguma instância não documentada afetar as compilações ##Mudar depois
@@ -166,8 +95,66 @@ source ~/.bash_profile
 
 ```
 
+Crie o layout exigido de diretório emitindo os seguintes comandos:
+
+```
+mkdir -vp "$BUILDDIR"/sources/{patches,files,pkgs}
+mkdir -vp "$BUILDDIR"/{stage1,stage2,boot,dev,proc,sys,run,tmp,home,mnt,etc,opt}
+mkdir -vp "$BUILDDIR"/etc/init.d
+mkdir -vp "$BUILDDIR/usr"/{bin,sbin,lib,share}
+mkdir -vp "$BUILDDIR/var"/{log,run,cache,tmp,lib}
+mkdir -pv $STAGE1/usr/{bin,sbin,lib,include,share}
+mkdir -pv $STAGE2/usr/{bin,sbin,lib,include,share}
+```
+
+Ajuste permissões:
+
+```
+chmod 1777 "$BUILDDIR/tmp" "$BUILDDIR/var/tmp"
+```
+
+Faça links simbólicos:
+
+```
+ln -sv usr/bin "$BUILDDIR/bin"
+ln -sv usr/sbin "$BUILDDIR/sbin"
+ln -sv usr/lib "$BUILDDIR/lib"
+ln -sv lib "$BUILDDIR/usr/lib64"
+
+ln -sv usr/bin $STAGE1/bin
+ln -sv usr/sbin $STAGE1/sbin
+ln -sv usr/lib $STAGE1/lib
+
+ln -sv usr/bin $STAGE2/bin
+ln -sv usr/sbin $STAGE2/sbin
+ln -sv usr/lib $STAGE2/lib
+```
+
+Baixe esse repositório e copie os patches e a lista de pacotes:
+
+```
+cd $BUILDDIR/sources/files
+git clone https://github.com/wende1xp/linuxdozero.git
+cp -rv linuxdozero/patches/* ../patches
+cp linuxdozero/sources/source_pkgs.list .
+```
+
+Remova o repositório pois não será mais necessário:
+
+```
+rm -rf linuxdozero
+```
+
+Use o arquivo source_pkgs.list para baixar todos os pacotes necessários:
+
+```
+wget --input-file=$BUILDDIR/sources/files/source_pkgs.list --continue --directory-prefix=$BUILDDIR/sources/pkgs
+```
+
+
 Próximo Capítulo:
 [Capítulo 2 - Ferramentas de Compilação (Fase 1)](cap2.md)
+
 
 
 
