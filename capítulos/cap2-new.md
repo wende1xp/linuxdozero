@@ -157,7 +157,7 @@ export CFLAGS="-fPIC -Wno-unused-command-line-argument"
 export CXXFLAGS="$CFLAGS"
 ```
 
-# • libatomic-chimera (v0.90.0.tar.gz)
+# • libatomic-chimera #teste compilar sem ele
 
 Compile e instale:
 
