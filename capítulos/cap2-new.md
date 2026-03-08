@@ -200,6 +200,32 @@ ninja -C build
 DESTDIR=$STAGE1 ninja -C build install
 ```
 
+# • Cabeçalhos do libc++
+
+Configure a compilação:
+
+```
+cmake -G Ninja -S libcxx -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_SYSROOT="$STAGE1" \
+ -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
+ -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
+ -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
+ -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument -unwindlib=libunwind" \
+ -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument -unwindlib=libunwind" \
+ -DLIBCXX_ENABLE_SHARED=OFF \
+ -DLIBCXX_ENABLE_STATIC=OFF \
+ -DLIBCXX_INSTALL_HEADERS=ON
+```
+
+Compile e instale:
+
+```
+DESTDIR=$STAGE1 ninja -C build install-cxx-headers
+```
+
 # • libc++abi
 
 Configure a compilação:
