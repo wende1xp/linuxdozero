@@ -1,12 +1,3 @@
-Fluxo vai mudar para:
-- 1  Linux headers
-- 2  clang minimal
-- 3  compiler-rt builtins
-- 4  musl
-- 5  libatomic-chimera
-- 6  runtimes
-- 5  clang completo
-
 Este capítulo mostra como construir um compilador cruzado e as ferramentas associadas usando o ambiente do sistema host. Os programas compilados neste capítulo serão instalados sob o diretório $LFS/tools para mantê-los separados dos arquivos instalados nos capítulos seguintes.
 
 Entre no diretório que contém os pacotes:
