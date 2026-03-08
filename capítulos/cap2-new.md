@@ -165,14 +165,14 @@ make CC="$STAGE1/bin/clang --target=x86_64-alpes-linux-musl --sysroot=$STAGE1 -r
 make CC="$STAGE1/bin/clang --target=x86_64-alpes-linux-musl --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld -nostdlib -nodefaultlibs" PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE1 install
 ```
 
-# • libunwind
+# • libunwind, libcxx e libcxxabi
 
 Utilize a árvore de diretórios que não removemos ao compilar compiler-rt.
 
 Configure a compilação:
 
 ```
-cmake -G Ninja -S libunwind -B build \
+cmake -G Ninja -S runtimes -B build \
  -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
  -DCMAKE_SYSROOT="$STAGE1" \
@@ -180,88 +180,17 @@ cmake -G Ninja -S libunwind -B build \
  -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
  -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
  -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=none -Wno-unused-command-line-argument" \
- -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -unwindlib=none -nostdlib++ -Wno-unused-command-line-argument" \
- -DLIBUNWIND_INSTALL_HEADERS=ON \
- -DLIBUNWIND_ENABLE_STATIC=ON \
- -DLIBUNWIND_ENABLE_SHARED=OFF \
- -DLIBUNWIND_USE_COMPILER_RT=ON \
- -DLIBUNWIND_HIDE_SYMBOLS=ON \
- -DLIBUNWIND_ENABLE_THREADS=ON \
- -DLIBUNWIND_ENABLE_CROSS_UNWINDING=ON \
- -DLIBUNWIND_ENABLE_ASSERTIONS=OFF \
- -DLIBUNWIND_ENABLE_CXX_EXCEPTIONS=OFF
-```
-
-Compile e instale:
-
-```
-ninja -C build
-DESTDIR=$STAGE1 ninja -C build install
-```
-
-# • Cabeçalhos do libc++
-
-Configure a compilação:
-
-```
-cmake -G Ninja -S libcxx -B build \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMAKE_SYSROOT="$STAGE1" \
- -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
- -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
- -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument -unwindlib=libunwind" \
- -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument -unwindlib=libunwind" \
+ -DCMAKE_C_FLAGS="$CFLAGS" \
+ -DCMAKE_CXX_FLAGS="$CXXFLAGS -nostdlib++" \
+ -DLLVM_ENABLE_RUNTIMES="libunwind;libcxx;libcxxabi" \
+ -DLIBCXX_USE_COMPILER_RT=ON \
+ -DLIBCXXABI_USE_COMPILER_RT=ON \
+ -DLIBCXXABI_USE_LLVM_UNWINDER=ON \
+ -DLIBCXX_HAS_MUSL_LIBC=ON \
  -DLIBCXX_ENABLE_SHARED=OFF \
  -DLIBCXX_ENABLE_STATIC=ON \
- -DLIBCXX_INSTALL_HEADERS=ON
-```
-
-Compile e instale:
-
-```
-DESTDIR=$STAGE1 ninja -C build install-cxx-headers
-```
-
-Um erro aqui é esperado pois compilamos apenas os headers mas cmake ainda tenta compilar libcxx.imp, logo dando erro:
-
-```
-CMake Error at cmake_install.cmake:6750 (file):
-  file INSTALL cannot find
-  "/mnt/working/sources/pkgs/llvm-project-21.1.8.src/build/include/c++/v1/libcxx.imp":
-  No such file or directory.
-Call Stack (most recent call first):
-  /mnt/working/sources/pkgs/llvm-project-21.1.8.src/build/cmake_install.cmake:47 (include)
-
-
-ninja: build stopped: subcommand failed.
-```
-
-
-# • libc++abi
-
-Configure a compilação:
-
-```
-cmake -G Ninja -S libcxxabi -B build \
- -DCMAKE_BUILD_TYPE=Release \
- -DCMAKE_INSTALL_PREFIX=/usr \
- -DCMAKE_SYSROOT="$STAGE1" \
- -DCMAKE_C_COMPILER="$STAGE1/bin/clang" \
- -DCMAKE_CXX_COMPILER="$STAGE1/bin/clang++" \
- -DCMAKE_C_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_CXX_COMPILER_TARGET="$SYSTARGET" \
- -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument -unwindlib=libunwind" \
- -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument -unwindlib=libunwind" \
- -DLIBCXXABI_ENABLE_STATIC=ON \
  -DLIBCXXABI_ENABLE_SHARED=OFF \
- -DLIBCXXABI_ENABLE_THREADS=ON \
- -DLIBCXXABI_ENABLE_ASSERTIONS=OFF \
- -DLIBCXXABI_USE_COMPILER_RT=ON \
- -DLIBCXXABI_USE_LLVM_UNWINDER=OFF
+ -DLIBCXXABI_ENABLE_STATIC=ON
 ```
 
 Compile e instale:
