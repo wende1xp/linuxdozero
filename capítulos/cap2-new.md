@@ -69,9 +69,17 @@ ninja -C build
 ninja -C build install
 ```
 
-# • compiler-rt (bultins + crts)
+Remova o diretório de compilação:
 
-Use a mesma árvore de diretórios do clang.
+```
+rm -rf build
+```
+
+Guarde a árvore de diretórios para a compilação de compiler-rt, libunwind, libcxx, libcxxabi e clang (fase 2).
+
+# • compiler-rt
+
+Compilaremos somente os builtins e os crts do compiler-rt nessa fase.
 
 Configure a compilação:
 
@@ -93,6 +101,27 @@ cmake -G Ninja -S compiler-rt -B build \
  -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
 ```
 
+Configure a compilação (TESTE):
+
+```
+cmake -G Ninja -S compiler-rt -B build \
+ -DCMAKE_BUILD_TYPE=Release \
+ -DCMAKE_INSTALL_PREFIX=/usr \
+ -DCMAKE_SYSROOT="$STAGE1" \
+ -DCMAKE_C_COMPILER=$STAGE1/bin/clang \
+ -DCMAKE_AR=$STAGE1/bin/llvm-ar \
+ -DCMAKE_RANLIB=$STAGE1/bin/llvm-ranlib \
+ -DCOMPILER_RT_BUILD_BUILTINS=ON \
+ -DCOMPILER_RT_BUILD_CRT=ON \
+ -DCOMPILER_RT_BUILD_SANITIZERS=OFF \
+ -DCOMPILER_RT_BUILD_XRAY=OFF \
+ -DCOMPILER_RT_BUILD_LIBFUZZER=OFF \
+ -DCOMPILER_RT_BUILD_PROFILE=OFF \
+ -DCOMPILER_RT_DEFAULT_TARGET_ONLY=ON \
+ -DCMAKE_C_COMPILER_TARGET=$SYSTARGET \
+ -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY
+```
+
 Compile e instale:
 
 ```
@@ -100,7 +129,7 @@ ninja -C build install-builtins
 ninja -C build install-crt
 ```
 
-Após isso remova o diretório de compilação para liberar armazenamento:
+Remova o diretório de compilação:
 
 ```
 rm -rf build
@@ -115,8 +144,6 @@ ln -sv $STAGE1/usr/lib/linux/libclang_rt.builtins-x86_64.a $STAGE1/usr/lib/clang
 ln -sv $STAGE1/usr/lib/linux/clang_rt.crtbegin-x86_64.o $STAGE1/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/clang_rt.crtbegin.o
 ln -sv $STAGE1/usr/lib/linux/clang_rt.crtend-x86_64.o $STAGE1/usr/lib/clang/21/lib/x86_64-alpes-linux-musl/clang_rt.crtend.o
 ```
-
-Não remova a árvore de diretórios que usamos pois ainda vamos usar ela para recompilar o clang (fase 2).
 
 # • Musl
 
@@ -166,9 +193,9 @@ make CC="$STAGE1/bin/clang --target=x86_64-alpes-linux-musl --sysroot=$STAGE1 -r
 make CC="$STAGE1/bin/clang --target=x86_64-alpes-linux-musl --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld -nostdlib -nodefaultlibs" PREFIX=/usr LIBDIR=/usr/lib DESTDIR=$STAGE1 install
 ```
 
-# • libunwind, libcxx e libcxxabi
+# • Runtimes C++ do Clang
 
-Utilize a árvore de diretórios que não removemos ao compilar compiler-rt.
+Instalaremos os runtimes mínimos (libunwind, libcxx e libcxxabi) para daqui a pouco compilar um novo Clang mais independente do host.
 
 Configure a compilação:
 
