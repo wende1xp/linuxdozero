@@ -216,7 +216,7 @@ cmake -G Ninja -S libcxx -B build \
  -DCMAKE_C_FLAGS="-fPIC -rtlib=compiler-rt -Wno-unused-command-line-argument -unwindlib=libunwind" \
  -DCMAKE_CXX_FLAGS="-fPIC -rtlib=compiler-rt -nostdlib++ -Wno-unused-command-line-argument -unwindlib=libunwind" \
  -DLIBCXX_ENABLE_SHARED=OFF \
- -DLIBCXX_ENABLE_STATIC=OFF \
+ -DLIBCXX_ENABLE_STATIC=ON \
  -DLIBCXX_INSTALL_HEADERS=ON
 ```
 
@@ -225,6 +225,21 @@ Compile e instale:
 ```
 DESTDIR=$STAGE1 ninja -C build install-cxx-headers
 ```
+
+Um erro aqui é esperado pois compilamos apenas os headers mas cmake ainda tenta compilar libcxx.imp, logo dando erro:
+
+```
+CMake Error at cmake_install.cmake:6750 (file):
+  file INSTALL cannot find
+  "/mnt/working/sources/pkgs/llvm-project-21.1.8.src/build/include/c++/v1/libcxx.imp":
+  No such file or directory.
+Call Stack (most recent call first):
+  /mnt/working/sources/pkgs/llvm-project-21.1.8.src/build/cmake_install.cmake:47 (include)
+
+
+ninja: build stopped: subcommand failed.
+```
+
 
 # • libc++abi
 
