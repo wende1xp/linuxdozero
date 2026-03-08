@@ -205,16 +205,10 @@ DESTDIR=$STAGE1 ninja -C build install
 
 Esse vai ser o nosso compilador final para o $STAGE1, esse será o compilador usado para compilar os próximos programas em $STAGE2.
 
+Agora que temos as runtimes C++, atualize as antigas flags CXX e CXXFLAGS deixar o uso de libc++ explícito:
+
 ```
-export CC="$STAGE1/bin/clang --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld"
-export CXX="$STAGE1/bin/clang++ --target=$SYSTARGET --sysroot=$STAGE1 -rtlib=compiler-rt -fuse-ld=lld -stdlib=libc++"
-
-export AR="$STAGE1/bin/llvm-ar"
-export RANLIB="$STAGE1/bin/llvm-ranlib"
-export NM="$STAGE1/bin/llvm-nm"
-export LD="$STAGE1/bin/ld.lld"
-
-export CFLAGS="-fPIC -Wno-unused-command-line-argument"
+export CXX="$CC -stdlib=libc++"
 export CXXFLAGS="$CFLAGS -stdlib=libc++"
 ```
 
