@@ -201,16 +201,16 @@ ninja -C build
 DESTDIR=$STAGE1 ninja -C build install
 ```
 
-# • Clang (Fase 2)
-
-Esse vai ser o nosso compilador final para o $STAGE1, esse será o compilador usado para compilar os próximos programas em $STAGE2.
-
 Agora que temos as runtimes C++, atualize as antigas flags CXX e CXXFLAGS deixar o uso de libc++ explícito:
 
 ```
 export CXX="$CC -stdlib=libc++"
 export CXXFLAGS="$CFLAGS -stdlib=libc++"
 ```
+
+# • Clang (Fase 2)
+
+Esse vai ser o nosso compilador final para o $STAGE1, esse será o compilador usado para compilar os próximos programas em $STAGE2.
 
 Configure a compilação:
 
