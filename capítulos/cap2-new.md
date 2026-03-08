@@ -3,8 +3,9 @@ Fluxo vai mudar para:
 - 2  clang minimal
 - 3  compiler-rt builtins
 - 4  musl
-- 5  clang completo + runtimes
-
+- 5  libatomic-chimera
+- 6  runtimes
+- 5  clang completo
 
 Este capítulo mostra como construir um compilador cruzado e as ferramentas associadas usando o ambiente do sistema host. Os programas compilados neste capítulo serão instalados sob o diretório $LFS/tools para mantê-los separados dos arquivos instalados nos capítulos seguintes.
 
@@ -221,41 +222,6 @@ cmake -G Ninja -S llvm -B build \
   -DLIBCXX_USE_COMPILER_RT=ON \
   -DLIBCXXABI_USE_COMPILER_RT=ON \
   -DLIBUNWIND_USE_COMPILER_RT=ON \
-  -DLLVM_INCLUDE_TESTS=OFF
-```
-
-TESTE:
-```
-cmake -G Ninja -S llvm -B build \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX=/usr \
-  -DCMAKE_SYSROOT=$STAGE1 \
-  -DCMAKE_C_COMPILER=$STAGE1/bin/clang \
-  -DCMAKE_CXX_COMPILER=$STAGE1/bin/clang++ \
-  -DCMAKE_C_FLAGS="-rtlib=compiler-rt -unwindlib=libunwind" \
-  -DCMAKE_CXX_FLAGS="-rtlib=compiler-rt -unwindlib=libunwind -stdlib=libc++ -nostdlib++" \
-  -DCMAKE_EXE_LINKER_FLAGS="-latomic" \
-  -DCMAKE_SHARED_LINKER_FLAGS="-latomic" \
-  -DCMAKE_CXX_STANDARD_LIBRARIES="-latomic" \
-  -DLLVM_ENABLE_THREADS=ON \
-  -DLLVM_ENABLE_ATOMICS=ON \
-  -DLLVM_ENABLE_LIBCXX=ON \
-  -DLLVM_ENABLE_PROJECTS="clang;lld" \
-  -DLLVM_ENABLE_RUNTIMES="compiler-rt;libunwind;libcxxabi;libcxx" \
-  -DLLVM_TARGETS_TO_BUILD="X86" \
-  -DLLVM_DEFAULT_TARGET_TRIPLE=$SYSTARGET \
-  -DCLANG_DEFAULT_LINKER=lld \
-  -DCLANG_DEFAULT_RTLIB=compiler-rt \
-  -DCLANG_DEFAULT_CXX_STDLIB=libc++ \
-  -DCLANG_DEFAULT_UNWINDLIB=libunwind \
-  -DLIBCXX_USE_COMPILER_RT=ON \
-  -DLIBCXX_HAS_MUSL_LIBC=ON \
-  -DLIBCXXABI_USE_COMPILER_RT=ON \
-  -DLIBUNWIND_USE_COMPILER_RT=ON \
-  -DHAVE_CXX_ATOMICS_WITHOUT_LIB=ON \
-  -DHAVE_CXX_ATOMICS_WITH_LIB=ON \
-  -DHAVE_CXX_ATOMICS64_WITHOUT_LIB=ON \
-  -DHAVE_CXX_ATOMICS64_WITH_LIB=ON \
   -DLLVM_INCLUDE_TESTS=OFF
 ```
 
