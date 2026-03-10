@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+IMGDIR=/mnt
+IMGFMT="qcow2"
+IMGNAME=linuxdozero.$IMGFMT
+
+P1MOUNT_DIR=/mnt/working/boot
+P2MOUNT_DIR=/mnt/working
+
+NBDDIR=/dev/nbd0
+NBDDIRP1=/dev/nbd0p1
+NBDDIRP2=/dev/nbd0p2
+
+modprobe nbd max_part=8
+
+qemu-nbd --connect=$NBDDIR $IMGDIR/$IMGNAME
+partprobe $NBDDIR
+
+sleep 1
+
+mount -t ext4 $NBDDIRP2 $P2MOUNT_DIR
+mount -t ext4 $NBDDIRP1 $P1MOUNT_DIR
+
+unset P1MOUNT_DIR P2MOUNT_DIR NBDDIR NBDDIRP1 NBDDIRP2
