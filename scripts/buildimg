@@ -15,7 +15,7 @@ NBDDIRP2=/dev/nbd0p2
 ROOTLABELNAME="Linux do Zero"
 BOOTLABELNAME="boot"
 
-P1MOUNT_DIR=/mnt/working/boot
+P1MOUNT_DIR=/mnt/working/boot/efi
 P2MOUNT_DIR=/mnt/working
 
 #BACKUPFILE=
@@ -51,13 +51,13 @@ partprobe $NBDDIR
 sleep 1
 
 # Formata partições
-mkfs -t ext4 $NBDDIRP1
+mkfs -t vfat $NBDDIRP1
 mkfs -t ext4 $NBDDIRP2
 sync
 
 # Nomea partições
 e2label  $NBDDIRP2 "${ROOTLABELNAME}"
-e2label $NBDDIRP1 "${BOOTLABELNAME}"
+f2label $NBDDIRP1 "${BOOTLABELNAME}"
 
 # Define umask
 umask 022
@@ -80,7 +80,7 @@ cd $IMGDIR
 mkdir -p $P1MOUNT_DIR
 
 # Monta imagem (p1)
-mount -t ext4 $NBDDIRP1 $P1MOUNT_DIR
+mount -t vfat $NBDDIRP1 $P1MOUNT_DIR
 
 # Limpeza de sources
 rm -rf $P2MOUNT_DIR/sources/*
@@ -106,7 +106,7 @@ partprobe $NBDDIR
 sleep 1
 
 mount -t ext4 $NBDDIRP2 $P2MOUNT_DIR
-mount -t ext4 $NBDDIRP1 $P1MOUNT_DIR
+mount -t vfat $NBDDIRP1 $P1MOUNT_DIR
 
 chown root:root $P2MOUNT_DIR
 chmod 755 $P2MOUNT_DIR

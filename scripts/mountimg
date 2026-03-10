@@ -6,7 +6,7 @@ IMGDIR=/mnt
 IMGFMT="qcow2"
 IMGNAME=linuxdozero.$IMGFMT
 
-P1MOUNT_DIR=/mnt/working/boot
+P1MOUNT_DIR=/mnt/working/boot/efi
 P2MOUNT_DIR=/mnt/working
 
 NBDDIR=/dev/nbd0
@@ -21,6 +21,6 @@ partprobe $NBDDIR
 sleep 1
 
 mount -t ext4 $NBDDIRP2 $P2MOUNT_DIR
-mount -t ext4 $NBDDIRP1 $P1MOUNT_DIR
+mount -t vfat $NBDDIRP1 $P1MOUNT_DIR
 
 unset P1MOUNT_DIR P2MOUNT_DIR NBDDIR NBDDIRP1 NBDDIRP2
